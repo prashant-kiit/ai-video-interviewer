@@ -1,7 +1,7 @@
 "use client";
 
-import Button from './Button';
-import { handleSignIn } from '../handlers';
+import Button from '../../shared/components/Button';
+import { handleSignIn } from './handlers';
 
 export default function SignIn() {
   return (
