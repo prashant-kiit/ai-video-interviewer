@@ -16,3 +16,4 @@ Ideas:
 Todos:
 1. Add Security for Server Action
 2. Refactor the NextJS folder as per Angular conventions
+3. Add User Activity Log
