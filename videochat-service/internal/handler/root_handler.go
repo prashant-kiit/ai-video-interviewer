@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/controller"
+	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/infra"
 )
 
 type RootHandler struct {
@@ -12,10 +13,14 @@ type RootHandler struct {
 }
 
 func NewRootHandler() RootHandler {
+	redisClient := infra.NewRedisClient()
+	
 	return RootHandler{
 		root:   controller.RootController{},
 		health: controller.HealthController{},
-		users:  controller.UserController{},
+		users:  controller.UserController{
+			Redis: redisClient,
+		},
 	}
 }
 

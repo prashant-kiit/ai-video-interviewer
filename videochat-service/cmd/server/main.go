@@ -9,6 +9,6 @@ import (
 func main() {
 	h := handler.NewRootHandler()
 
-	log.Println("Server running on http://localhost:8080")
+	log.Println("Server is running on http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", h))
 }
