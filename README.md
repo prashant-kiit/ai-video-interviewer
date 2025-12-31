@@ -11,3 +11,8 @@ Ideas:
 2. Use CSR, SSR, SSG, ISG, SWR with Redis
 3. Use Pipeline to setup project anywhere
 4. Try PWA with Next
+
+
+Todos:
+1. Add Security for Server Action
+2. Refactor the NextJS folder as per Angular conventions
