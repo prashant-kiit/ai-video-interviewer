@@ -17,3 +17,27 @@ Todos:
 1. Add Security for Server Action
 2. Refactor the NextJS folder as per Angular conventions
 3. Add User Activity Log
+4. Add SSL/TLS Certificate
+5. Add SQLLite for state management
+What each command does
+go mod download
+
+Downloads exact versions
+
+Uses go.sum to verify checksums
+
+Does NOT modify go.mod
+
+go mod tidy
+
+Downloads needed deps
+
+Removes unused deps
+
+Updates go.mod and go.sum
+
+go build / go run
+
+Auto-downloads missing deps
+
+Fails if go.sum checksum doesn’t match

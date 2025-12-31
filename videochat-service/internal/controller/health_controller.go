@@ -5,5 +5,5 @@ import "net/http"
 type HealthController struct{}
 
 func (c HealthController) Get(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("ok"))
+	w.Write([]byte("Server is up and running"))
 }
