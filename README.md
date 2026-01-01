@@ -21,6 +21,7 @@ Todos:
 5. Add SQLLite for state management
 6. Add Docker Local Configuration
 7. Make Registration for unique usernames
+8. Add Data Validation in APIs
 
 
 Go Package Management:
