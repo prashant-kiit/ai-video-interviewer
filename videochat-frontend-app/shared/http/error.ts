@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export type ApiError<T = unknown> = {
+export type ApiError = {
   message: string;
   status?: number;
-  data?: T;
+  data?: string;
 };
 
 export function normalizeError(error: unknown): ApiError {

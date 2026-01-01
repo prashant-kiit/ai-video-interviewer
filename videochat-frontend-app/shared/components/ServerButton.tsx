@@ -4,7 +4,5 @@ type ServerButtonProps = {
 };
 
 export default function ServerButton({ type, name }: ServerButtonProps) {
-  return (
-      <button type={type}>{name}</button>
-  );
+  return <button type={type}>{name}</button>;
 }
