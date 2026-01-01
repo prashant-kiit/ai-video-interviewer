@@ -2,10 +2,8 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
-  cmd = "docker compose build"
-  entrypoint = "./tmp/server"
-  include_ext = ["go"]
-  exclude_dir = ["tmp", "vendor"]
-
-[run]
-  cmd = "docker-compose up"
+cmd = "go build -o ./tmp/server ./cmd/server"
+bin = "tmp/server"
+include_ext = ["go"]
+exclude_dir = ["vendor", "tmp"]
+delay = 1000
