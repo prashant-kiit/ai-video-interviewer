@@ -19,6 +19,11 @@ Todos:
 3. Add User Activity Log
 4. Add SSL/TLS Certificate
 5. Add SQLLite for state management
+6. Add Docker Local Configuration
+7. Make Registration for unique usernames
+
+
+Go Package Management:
 What each command does
 go mod download
 
