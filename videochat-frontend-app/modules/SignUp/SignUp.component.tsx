@@ -1,11 +1,21 @@
+"use client";
+
 import Input from "../../shared/components/Input";
 import { signUpHandler } from "./signUp.handler";
 import Button from "../../shared/components/ServerButton";
 
-
 export default function SignUpForm() {
+  async function onSubmit(formData: FormData) {
+    try {
+      const response = await signUpHandler(formData);
+      console.log("Response:", response);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
   return (
-    <form action={signUpHandler}>
+    <form action={onSubmit}>
       <div>
         <Input label="Name" name="name" isRequired />
         <Input label="Username" name="username" isRequired />

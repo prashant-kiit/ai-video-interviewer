@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/shared"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
+	"github.com/go-playground/validator/v10"
 )
 
 type UserController struct {
@@ -19,6 +20,12 @@ func (c UserController) Create(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
+	}
+	
+	validate := validator.New()
+	if err := validate.Struct(req); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 	}
 
 	id, err := c.Redis.Incr(r.Context(), "user:id:seq").Result()
@@ -44,8 +51,6 @@ func (c UserController) Create(w http.ResponseWriter, r *http.Request) {
 
 	resp := model.SignUpResponse{
 		ID:       user.ID,
-		Name:     user.Name,
-		Username: user.Username,
 	}
 
 	shared.WriteJSON(w, http.StatusCreated, "user created", resp)
