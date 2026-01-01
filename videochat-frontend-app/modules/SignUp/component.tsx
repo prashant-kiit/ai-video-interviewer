@@ -1,10 +1,9 @@
-import Button from '../../shared/components/Button';
-import { handleSignUp } from './handlers';
+import Link from "next/link";
 
 export default function SignUp() {
   return (
     <div>
-      <Button name="Sign Up" handler={handleSignUp} />
+      <Link href="/signup">Sign Up</Link>
     </div>
   );
 }
