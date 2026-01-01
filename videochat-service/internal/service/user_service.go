@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
@@ -40,33 +39,38 @@ func (u *UserService) Validate(w http.ResponseWriter, r *http.Request) (model.Si
 }
 
 func (u *UserService) CreateUser(w http.ResponseWriter, r *http.Request, req model.SignUpRequest) (model.SignUpResponse, error) {
-	id, err := u.Redis.Incr(r.Context(), "user:id:seq").Result()
-	if err != nil {
-		return model.SignUpResponse{}, errors.New("failed to generate user id")
-	}
-	
+	ctx := r.Context()
+
 	hashedPassword, err := u.hashPassword(req.Password)
 	if err != nil {
 		return model.SignUpResponse{}, errors.New("failed to hash password")
 	}
-	
+
 	user := model.User{
-		ID:       strconv.FormatInt(id, 10),
+		// ID:       strconv.FormatInt(id, 10),
 		Name:     req.Name,
 		Username: req.Username,
 		Password: hashedPassword,
 	}
 
-	key := "user:" + user.ID
-	data, _ := json.Marshal(user)
+	key := user.Username
 
-	if err := u.Redis.Set(r.Context(), key, data, 0).Err(); err != nil {
+	exists, err := u.Redis.Exists(ctx, key).Result()
+	if err != nil {
+		return model.SignUpResponse{}, errors.New("failed to check user existence")
+	}
+
+	if exists == 1 {
+		return model.SignUpResponse{}, errors.New("user already exists")
+	}
+
+	data, _ := json.Marshal(user)
+	if err := u.Redis.Set(ctx, key, data, 0).Err(); err != nil {
 		return model.SignUpResponse{}, errors.New("failed to save user")
 	}
 
 	resp := model.SignUpResponse{
 		ID: user.ID,
 	}
-
 	return resp, nil
 }
