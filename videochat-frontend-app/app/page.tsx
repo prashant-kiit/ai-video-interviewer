@@ -1,5 +1,5 @@
-import SignUp from '../modules/SignUp/component';
-import SignIn from '../modules/SignIn/component';
+import SignUpLink from '../modules/SignUp/SignUp.interface';
+import SignInLink from '../modules/SignIn/SignIn.interface';
 
 export default function Home() {
   return (
@@ -9,8 +9,8 @@ export default function Home() {
         <h2>Welcome to the Video Chat Application</h2>
       </div>
       <div>
-        <SignUp/>
-        <SignIn/>
+        <SignUpLink/>
+        <SignInLink/>
       </div>
     </div>
   );
