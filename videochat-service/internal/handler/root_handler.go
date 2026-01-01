@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/controller"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/infra"
 )
@@ -12,19 +13,19 @@ type RootHandler struct {
 	users  controller.UserController
 }
 
-func NewRootHandler() RootHandler {
+func NewRootHandler() *RootHandler {
 	redisClient := infra.NewRedisClient()
-	
-	return RootHandler{
+
+	return &RootHandler{
 		root:   controller.RootController{},
 		health: controller.HealthController{},
-		users:  controller.UserController{
+		users: controller.UserController{
 			Redis: redisClient,
 		},
 	}
 }
 
-func (h RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.Method == http.MethodGet && r.URL.Path == "/":
 		h.root.Index(w, r)

@@ -11,7 +11,7 @@ type APIResponse struct {
 	Data    any         `json:"data"`
 }
 
-func WriteJSON(w http.ResponseWriter, status int, message string, data any) {
+func SendJSON(w http.ResponseWriter, status int, message string, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 
