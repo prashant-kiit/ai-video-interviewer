@@ -2,9 +2,10 @@ package controller
 
 import (
 	"net/http"
+
+	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/service"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/shared"
-	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
 )
 
 type UserController struct {
@@ -14,13 +15,13 @@ type UserController struct {
 func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
 	req, err := shared.Validate[model.SignUpRequest](r)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		shared.SendError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	resp, err := c.UserService.CreateUser(r, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		shared.SendError(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -30,13 +31,13 @@ func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
 func (c *UserController) SignIn(w http.ResponseWriter, r *http.Request) {
 	req, err := shared.Validate[model.SignInRequest](r)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		shared.SendError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	resp, err := c.UserService.UserSignIn(r, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		shared.SendError(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

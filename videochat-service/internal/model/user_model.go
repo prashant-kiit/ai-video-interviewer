@@ -17,6 +17,7 @@ type SignUpResponse struct {
 
 type SignInResponse struct {
 	Username string `json:"username"`
+	Token    string `json:"token"`
 }
 
 type User struct {

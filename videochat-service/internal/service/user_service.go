@@ -82,17 +82,6 @@ func (u *UserService) UserSignIn(r *http.Request, req model.SignInRequest) (mode
 		return model.SignInResponse{}, errors.New("failed to unmarshal user")
 	}
 
-	// hashedPassword, err := u.hashPassword(req.Password)
-	// if err != nil {
-	// 	return model.SignInResponse{}, errors.New("failed to hash password")
-	// }
-
-	// fmt.Println("hashedPassword:", hashedPassword)
-
-	// if user.Password != hashedPassword {
-	// 	return model.SignInResponse{}, errors.New("incorrect password")
-	// }
-
 	if err := bcrypt.CompareHashAndPassword(
 		[]byte(user.Password),
 		[]byte(req.Password),
@@ -102,6 +91,7 @@ func (u *UserService) UserSignIn(r *http.Request, req model.SignInRequest) (mode
 
 	resp := model.SignInResponse{
 		Username: user.Username,
+		Token:    "token",
 	}
 	return resp, nil
 }

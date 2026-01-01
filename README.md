@@ -22,6 +22,9 @@ Todos:
 6. Add Docker Local Configuration
 7. Make Registration for unique usernames
 8. Add Data Validation in APIs
+9. Add JWT Authentication
+10. Implement Role-Based Access Control
+11. Add CORS
 
 
 Go Package Management:
