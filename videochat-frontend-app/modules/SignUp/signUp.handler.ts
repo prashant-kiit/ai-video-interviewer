@@ -3,9 +3,8 @@
 import request from "../../shared/http/request";
 
 type SignUpResponse = {
-  message: string;
-};
-
+  userId: string;
+}
 
 export async function signUpHandler(formData: FormData) {
   const name = formData.get("name");
