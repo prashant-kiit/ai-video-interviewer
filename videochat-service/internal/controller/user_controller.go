@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"github.com/redis/go-redis/v9"
 )
@@ -22,18 +23,21 @@ func (c UserController) Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
+	
+	fmt.Println(user)
 
-	key := "user:" + user.ID
+	// key := "user:" + user.ID
 
-	data, _ := json.Marshal(user)
+	// data, _ := json.Marshal(user)
 
-	err := c.Redis.Set(r.Context(), key, data, 0).Err()
-	if err != nil {
-		http.Error(w, "failed to save user", http.StatusInternalServerError)
-		return
-	}
+	// err := c.Redis.Set(r.Context(), key, data, 0).Err()
+	// if err != nil {
+	// 	http.Error(w, "failed to save user", http.StatusInternalServerError)
+	// 	return
+	// }
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("user created"))
+	w.Write([]byte(`{"message":"user created"}`))
 }
 

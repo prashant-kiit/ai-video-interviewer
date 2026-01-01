@@ -32,7 +32,7 @@ func (h RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case r.Method == http.MethodGet && r.URL.Path == "/health":
 		h.health.Get(w, r)
 
-	case r.Method == http.MethodPost && r.URL.Path == "/users":
+	case r.Method == http.MethodPost && r.URL.Path == "/signup":
 		h.users.Create(w, r)
 
 	default:
