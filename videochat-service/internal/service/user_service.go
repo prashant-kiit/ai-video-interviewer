@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/crypto/bcrypt"
@@ -23,22 +22,7 @@ func (u *UserService) hashPassword(password string) (string, error) {
 	return string(bytes), nil
 }
 
-func (u *UserService) Validate(w http.ResponseWriter, r *http.Request) (model.SignUpRequest, error) {
-	var req model.SignUpRequest
-
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		return req, errors.New("invalid request body")
-	}
-
-	validate := validator.New()
-	if err := validate.Struct(req); err != nil {
-		return req, err
-	}
-
-	return req, nil
-}
-
-func (u *UserService) CreateUser(w http.ResponseWriter, r *http.Request, req model.SignUpRequest) (model.SignUpResponse, error) {
+func (u *UserService) CreateUser(r *http.Request, req model.SignUpRequest) (model.SignUpResponse, error) {
 	ctx := r.Context()
 
 	hashedPassword, err := u.hashPassword(req.Password)
@@ -69,6 +53,54 @@ func (u *UserService) CreateUser(w http.ResponseWriter, r *http.Request, req mod
 	}
 
 	resp := model.SignUpResponse{
+		Username: user.Username,
+	}
+	return resp, nil
+}
+
+func (u *UserService) UserSignIn(r *http.Request, req model.SignInRequest) (model.SignInResponse, error) {
+	ctx := r.Context()
+
+	key := req.Username
+
+	exists, err := u.Redis.Exists(ctx, key).Result()
+	if err != nil {
+		return model.SignInResponse{}, errors.New("failed to check user existence")
+	}
+
+	if exists != 1 {
+		return model.SignInResponse{}, errors.New("user doesn't exist")
+	}
+
+	val, err := u.Redis.Get(ctx, key).Result()
+	if err != nil {
+		return model.SignInResponse{}, errors.New("failed to get user")
+	}
+
+	var user model.User
+	if err := json.Unmarshal([]byte(val), &user); err != nil {
+		return model.SignInResponse{}, errors.New("failed to unmarshal user")
+	}
+
+	// hashedPassword, err := u.hashPassword(req.Password)
+	// if err != nil {
+	// 	return model.SignInResponse{}, errors.New("failed to hash password")
+	// }
+
+	// fmt.Println("hashedPassword:", hashedPassword)
+
+	// if user.Password != hashedPassword {
+	// 	return model.SignInResponse{}, errors.New("incorrect password")
+	// }
+
+	if err := bcrypt.CompareHashAndPassword(
+		[]byte(user.Password),
+		[]byte(req.Password),
+	); err != nil {
+		return model.SignInResponse{}, errors.New("incorrect password")
+	}
+
+	resp := model.SignInResponse{
 		Username: user.Username,
 	}
 	return resp, nil

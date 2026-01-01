@@ -39,6 +39,9 @@ func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case r.Method == http.MethodPost && r.URL.Path == "/signup":
 		h.users.Create(w, r)
+		
+	case r.Method == http.MethodPost && r.URL.Path == "/signin":
+		h.users.SignIn(w, r)
 
 	default:
 		http.NotFound(w, r)

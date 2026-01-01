@@ -3,20 +3,19 @@
 import request from "../../shared/http/request";
 import { ApiError } from "../../shared/http/error";
 
-type SignUpResponse = {
+type SignInResponse = {
   username: string;
 };
 
-export async function signUpHandler(formData: FormData) {
-  const name = formData.get("name");
+export async function signInHandler(formData: FormData) {
   const username = formData.get("username");
   const password = formData.get("password");
 
   try {
-    const response = await request<SignUpResponse>({
+    const response = await request<SignInResponse>({
       method: "POST",
-      url: "/signup",
-      data: { name, username, password },
+      url: "/signin",
+      data: { username, password },
     });
 
     return { ok: true, ...response };

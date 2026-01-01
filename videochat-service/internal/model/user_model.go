@@ -6,7 +6,16 @@ type SignUpRequest struct {
 	Password string `json:"password" validate:"required,min=6"`
 }
 
+type SignInRequest struct {
+	Username string `json:"username" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=6"`
+}
+
 type SignUpResponse struct {
+	Username string `json:"username"`
+}
+
+type SignInResponse struct {
 	Username string `json:"username"`
 }
 
