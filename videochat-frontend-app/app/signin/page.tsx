@@ -1,10 +1,9 @@
+import Header from "../../shared/components/Header";
+
 export default function SignUpPage() {
   return (
     <div>
-      <div>
-        <h1>Video Chat Application</h1>
-        <h2>Sign In</h2>
-      </div>
+      <Header title="Sign In" size={2}/>
       <div>
       </div>
     </div>

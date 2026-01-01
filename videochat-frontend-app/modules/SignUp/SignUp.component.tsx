@@ -7,8 +7,8 @@ import Button from "../../shared/components/ServerButton";
 export default function SignUpForm() {
   async function onSubmit(formData: FormData) {
     try {
-      const response = await signUpHandler(formData);
-      console.log("Response:", response);
+      const result = await signUpHandler(formData);
+      console.log("Result:", result);
     } catch (error) {
       console.error("Error:", error);
     }

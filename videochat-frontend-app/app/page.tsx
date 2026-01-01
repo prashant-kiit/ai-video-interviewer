@@ -1,17 +1,13 @@
-import SignUpLink from '../modules/SignUp/SignUp.interface';
-import SignInLink from '../modules/SignIn/SignIn.interface';
+import SignUpLink from "../modules/SignUp/SignUp.interface";
+import SignInLink from "../modules/SignIn/SignIn.interface";
+import Header from "../shared/components/Header";
 
 export default function Home() {
   return (
     <div>
-      <div>
-        <h1>Video Chat Application</h1>
-        <h2>Welcome to the Video Chat Application</h2>
-      </div>
-      <div>
-        <SignUpLink/>
-        <SignInLink/>
-      </div>
+      <Header title="Welcome to the Video Chat Application" size={2} />
+      <SignUpLink />
+      <SignInLink />
     </div>
   );
 }

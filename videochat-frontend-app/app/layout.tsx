@@ -1,4 +1,6 @@
+import Header from "../shared/components/Header";
 import type { Metadata } from "next";
+import Footer from "../shared/components/Footer";
 
 export const metadata: Metadata = {
   title: "Video Chat Application",
@@ -13,7 +15,11 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        {children}
+        <div className="page">
+          <Header title="Video Chat Application" isHorizontalLine />
+          <main>{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

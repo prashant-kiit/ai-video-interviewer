@@ -1,15 +1,11 @@
-import SignUpForm from "../../modules/SignUp/SignUp.component"
+import SignUpForm from "../../modules/SignUp/SignUp.component";
+import Header from "../../shared/components/Header";
 
 export default function SignUpPage() {
   return (
     <div>
-      <div>
-        <h1>Video Chat Application</h1>
-        <h2>Sign Up</h2>
-      </div>
-      <div>
-        <SignUpForm />
-      </div>
+      <Header title="Sign Up" size={2} />
+      <SignUpForm />
     </div>
   );
 }

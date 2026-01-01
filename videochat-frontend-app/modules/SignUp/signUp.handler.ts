@@ -19,10 +19,10 @@ export async function signUpHandler(formData: FormData) {
       data: { name, username, password },
     });
 
-    return response.message;
+    return response;
   } catch (error) {
     const err = error as ApiError;
     
-    throw new Error(err.data as string);  
+    return err;  
   }
 }
