@@ -47,7 +47,6 @@ func (u *UserService) CreateUser(w http.ResponseWriter, r *http.Request, req mod
 	}
 
 	user := model.User{
-		// ID:       strconv.FormatInt(id, 10),
 		Name:     req.Name,
 		Username: req.Username,
 		Password: hashedPassword,
@@ -70,7 +69,7 @@ func (u *UserService) CreateUser(w http.ResponseWriter, r *http.Request, req mod
 	}
 
 	resp := model.SignUpResponse{
-		ID: user.ID,
+		Username: user.Username,
 	}
 	return resp, nil
 }
