@@ -1,11 +1,11 @@
 "use client";
 
-type ButtonProps = {
+type ClientButtonProps = {
   name: string;
   handler: () => void;
 };
 
-export default function Button({ name, handler }: ButtonProps) {
+export default function ClientButton({ name, handler }: ClientButtonProps) {
   return (
     <form action={handler}>
       <button type="submit">{name}</button>
