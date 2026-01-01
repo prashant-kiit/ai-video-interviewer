@@ -5,6 +5,7 @@ import (
 
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/controller"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/infra"
+	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/service"
 )
 
 type RootHandler struct {
@@ -15,12 +16,15 @@ type RootHandler struct {
 
 func NewRootHandler() *RootHandler {
 	redisClient := infra.NewRedisClient()
+	userService := service.UserService{
+		Redis: redisClient,
+	}
 
 	return &RootHandler{
 		root:   controller.RootController{},
 		health: controller.HealthController{},
 		users: controller.UserController{
-			Redis: redisClient,
+			UserService: userService,
 		},
 	}
 }
