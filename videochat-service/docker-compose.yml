@@ -12,6 +12,7 @@ services:
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      JWT_SECRET: super-secret-key
     depends_on:
       - redis
     command: air

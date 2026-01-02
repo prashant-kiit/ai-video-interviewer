@@ -92,7 +92,7 @@ func (u *UserService) UserSignIn(r *http.Request, req model.SignInRequest) (mode
 	
 	token, err := shared.GenerateJWT(user.Username)
 	if err != nil {
-		return model.SignInResponse{}, errors.New("failed to generate token")
+		return model.SignInResponse{}, err
 	}
 
 	resp := model.SignInResponse{
