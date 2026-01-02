@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
+	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/shared"
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -88,10 +89,15 @@ func (u *UserService) UserSignIn(r *http.Request, req model.SignInRequest) (mode
 	); err != nil {
 		return model.SignInResponse{}, errors.New("incorrect password")
 	}
+	
+	token, err := shared.GenerateJWT(user.Username)
+	if err != nil {
+		return model.SignInResponse{}, errors.New("failed to generate token")
+	}
 
 	resp := model.SignInResponse{
 		Username: user.Username,
-		Token:    "token",
+		Token:    token,
 	}
 	return resp, nil
 }
