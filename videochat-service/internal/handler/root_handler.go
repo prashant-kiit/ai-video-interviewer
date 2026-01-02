@@ -12,11 +12,15 @@ type RootHandler struct {
 	root   controller.RootController
 	health controller.HealthController
 	users  controller.UserController
+	meetings controller.MeetingController
 }
 
 func NewRootHandler() *RootHandler {
 	redisClient := infra.NewRedisClient()
 	userService := service.UserService{
+		Redis: redisClient,
+	}
+	meetingService := service.MeetingService{
 		Redis: redisClient,
 	}
 
@@ -25,6 +29,9 @@ func NewRootHandler() *RootHandler {
 		health: controller.HealthController{},
 		users: controller.UserController{
 			UserService: userService,
+		},
+		meetings: controller.MeetingController{
+			MeetingService: meetingService,
 		},
 	}
 }
@@ -42,6 +49,9 @@ func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		
 	case r.Method == http.MethodPost && r.URL.Path == "/signin":
 		h.users.SignIn(w, r)
+		
+	case r.Method == http.MethodPost && r.URL.Path == "/createmeeting":
+		h.meetings.Create(w, r)
 
 	default:
 		http.NotFound(w, r)

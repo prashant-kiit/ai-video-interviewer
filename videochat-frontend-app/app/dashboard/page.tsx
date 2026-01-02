@@ -1,15 +1,13 @@
-"use client"
-
 import Header from "../../shared/components/Header";
-import { useAtom } from "jotai";
-import { tokenAtom } from "../../shared/store/tokenAtom";
+import CreateMeetingLink from "../../modules/CreateMeeting/CreateMeeting.interface";
+// import JoinMeeting from "../../shared/components/JoinMeeting";
 
 export default function DashboardPage() {
-  const [token, ] = useAtom(tokenAtom)
   return (
     <div>
       <Header title="Dashboard" size={2} />
-      Token: {token}
+      <CreateMeetingLink/>
+      {/*<JoinMeetingLink/>*/}
     </div>
   );
 }

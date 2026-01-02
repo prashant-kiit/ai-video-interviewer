@@ -1,25 +1,25 @@
 "use client";
 import { useState } from "react";
-import { signUpHandler } from "./signUp.handler";
+import { createMeetingHandler } from "./createMeeting.handler";
 import Button from "../../shared/components/ServerButton";
 import Form from "../../shared/components/Form";
 import FormInput from "../../shared/components/FormInput";
 import Error from "../../shared/components/Error";
 import { useRouter } from "next/navigation";
 
-export default function SignUpForm() {
+export default function CreateMeetingForm() {
   const [errorMessage, setErrorMessage] = useState<string | "">("");
   const router = useRouter();
 
   async function onSubmit(formData: FormData) {
     try {
-      const result = await signUpHandler(formData);
+      const result = await createMeetingHandler(formData);
       console.log("Result:", result);
       if (result.ok) {
-        console.log("User created successfully");
-        router.push("/signin");
+        console.log("Meeting created successfully");
+        // router.push(`/meetings/${result.meetingId}`);
       } else {
-        console.error("Error in user sign up:", result.error);
+        console.error("Error in create meeting:", result.error);
         setErrorMessage(result.error as string);
       }
     } catch (error) {
@@ -29,10 +29,10 @@ export default function SignUpForm() {
 
   return (
     <div>
-      <Form action={onSubmit} button={<Button type="submit" name="Sign Up" />}>
-        <FormInput label="Name" name="name" isRequired />
-        <FormInput label="Username" name="username" type="email" isRequired />
-        <FormInput label="Password" name="password" type="password" isRequired />
+      <Form action={onSubmit} button={<Button type="submit" name="Create Meeting" />}>
+        <FormInput label="Name" name="meeting-name" type="text" isRequired />
+        <FormInput label="Date" name="meeting-date" type="date" isRequired />
+        <FormInput label="Time" name="meeting-time" type="time" isRequired />
       </Form>
       <Error message={errorMessage}/>
     </div>

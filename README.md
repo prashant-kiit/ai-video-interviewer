@@ -25,6 +25,7 @@ Todos:
 9. Add JWT Authentication
 10. Implement Role-Based Access Control
 11. Add CORS
+12. Refactor the handlers and actions
 
 
 Go Package Management:

@@ -17,8 +17,6 @@ export async function signInHandler(formData: FormData) : Promise<{ ok: true; to
       url: "/signin",
       data: { username, password },
     });
-    
-    console.log("response", response)
 
     return { ok: true, token: response.data.token };
   } catch (error) {

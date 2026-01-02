@@ -7,7 +7,7 @@ export default function Error({
 }: ErrorProps) {
   return (
     <div>
-      <p>{message}</p>
+      <p style={{ color: "red" }}>{message}</p>
     </div>
   );
 }

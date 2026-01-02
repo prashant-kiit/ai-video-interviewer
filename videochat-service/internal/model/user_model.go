@@ -1,7 +1,7 @@
 package model
 
 type SignUpRequest struct {
-	Name     string `json:"name" validate:"required,min=2"`
+	Name     string `json:"name" validate:"required,min=2,max=100"`
 	Username string `json:"username" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=6"`
 }
