@@ -5,7 +5,7 @@ import { AxiosRequestConfig } from "axios";
 type Response<T> = {
   status: number;
   message: string;
-  body: T;
+  data: T;
 };
 
 async function request<T>(

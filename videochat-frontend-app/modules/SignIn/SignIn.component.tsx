@@ -6,8 +6,11 @@ import Form from "../../shared/components/Form";
 import FormInput from "../../shared/components/FormInput";
 import Error from "../../shared/components/Error";
 import { useRouter } from "next/navigation";
+import { useAtom } from "jotai";
+import { tokenAtom } from "../../shared/store/tokenAtom";
 
 export default function SignInForm() {
+  const [, setToken] = useAtom(tokenAtom);
   const [errorMessage, setErrorMessage] = useState<string | "">("");
   const router = useRouter();
 
@@ -17,10 +20,11 @@ export default function SignInForm() {
       console.log("Result:", result);
       if (result.ok) {
         console.log("User logged in successfully");
+        setToken(result.token);
         router.push("/dashboard");
       } else {
-        console.error("Error:", result.error);
-        setErrorMessage(result.error as string);
+        console.error("Error in user login:", result.error);
+        setErrorMessage(result.error);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -31,9 +35,14 @@ export default function SignInForm() {
     <div>
       <Form action={onSubmit} button={<Button type="submit" name="Sign In" />}>
         <FormInput label="Username" name="username" type="email" isRequired />
-        <FormInput label="Password" name="password" type="password" isRequired />
+        <FormInput
+          label="Password"
+          name="password"
+          type="password"
+          isRequired
+        />
       </Form>
-      <Error message={errorMessage}/>
+      <Error message={errorMessage} />
     </div>
   );
 }

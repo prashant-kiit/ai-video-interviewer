@@ -96,7 +96,6 @@ func (u *UserService) UserSignIn(r *http.Request, req model.SignInRequest) (mode
 	}
 
 	resp := model.SignInResponse{
-		Username: user.Username,
 		Token:    token,
 	}
 	return resp, nil
