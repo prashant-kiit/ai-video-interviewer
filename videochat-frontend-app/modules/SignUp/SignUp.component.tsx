@@ -4,7 +4,7 @@ import { signUpHandler } from "./signUp.handler";
 import Button from "../../shared/components/ServerButton";
 import Form from "../../shared/components/Form";
 import FormInput from "../../shared/components/FormInput";
-import Error from "../../shared/components/Error";
+import Banner from "../../shared/components/Banner";
 import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
@@ -34,7 +34,7 @@ export default function SignUpForm() {
         <FormInput label="Username" name="username" type="email" isRequired />
         <FormInput label="Password" name="password" type="password" isRequired />
       </Form>
-      <Error message={errorMessage}/>
+      <Banner message={errorMessage}/>
     </div>
   );
 }

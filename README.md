@@ -29,6 +29,8 @@ Todos:
 13. Add Authentication Middleware 
 14. Add Owner User in Meeting record
 15. Add route protection for authenticated users
+16. Create Instant Meeting
+17. Add Link to Meeting
 
 
 Go Package Management:

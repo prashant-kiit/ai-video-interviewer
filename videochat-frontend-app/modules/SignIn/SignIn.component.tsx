@@ -4,7 +4,7 @@ import { signInHandler } from "./signIn.handler";
 import Button from "../../shared/components/ServerButton";
 import Form from "../../shared/components/Form";
 import FormInput from "../../shared/components/FormInput";
-import Error from "../../shared/components/Error";
+import Banner from "../../shared/components/Banner";
 import { useRouter } from "next/navigation";
 import { useToken } from "../../shared/store/token";
 
@@ -41,7 +41,7 @@ export default function SignInForm() {
           isRequired
         />
       </Form>
-      <Error message={errorMessage} />
+      <Banner message={errorMessage} />
     </div>
   );
 }
