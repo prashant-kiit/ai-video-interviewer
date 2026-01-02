@@ -7,16 +7,16 @@ import Form from "../../shared/components/Form";
 import FormInput from "../../shared/components/FormInput";
 import Error from "../../shared/components/Error";
 import { useRouter } from "next/navigation";
-import { useToken } from "../../shared/store/tokenAtom";
+import { useToken } from "../../shared/store/token";
 
 export default function CreateMeetingForm() {
-  const { token } = useToken();
+  const { getToken } = useToken();
   const [errorMessage, setErrorMessage] = useState<string | "">("");
   const router = useRouter();
 
   async function onSubmit(formData: FormData) {
     try {
-      const result = await createMeetingHandler(formData, token);
+      const result = await createMeetingHandler(formData, getToken());
       console.log("Result:", result);
       if (result.ok) {
         console.log("Meeting created successfully");

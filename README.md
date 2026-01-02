@@ -27,6 +27,7 @@ Todos:
 11. Add CORS
 12. Refactor the handlers and actions
 13. Add Authentication Middleware 
+14. Add Owner User in Meeting record
 
 
 Go Package Management:

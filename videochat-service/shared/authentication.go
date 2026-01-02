@@ -17,7 +17,7 @@ func GenerateJWT(username string) (string, error) {
 	}
 
 	jwtSecret := []byte(secret)
-	
+
 	claims := jwt.MapClaims{
 		"username": username,
 		"iat":      time.Now().Unix(),

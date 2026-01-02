@@ -6,10 +6,10 @@ import Form from "../../shared/components/Form";
 import FormInput from "../../shared/components/FormInput";
 import Error from "../../shared/components/Error";
 import { useRouter } from "next/navigation";
-import { useToken } from "../../shared/store/tokenAtom";
+import { useToken } from "../../shared/store/token";
 
 export default function SignInForm() {
-  const { setToken } = useToken();
+  const { storeToken } = useToken();
   const [errorMessage, setErrorMessage] = useState<string | "">("");
   const router = useRouter();
 
@@ -19,7 +19,7 @@ export default function SignInForm() {
       console.log("Result:", result);
       if (result.ok) {
         console.log("User logged in successfully");
-        setToken(result.token);
+        storeToken(result.token);
         router.push("/dashboard");
       } else {
         console.error("Error in user login:", result.error);
