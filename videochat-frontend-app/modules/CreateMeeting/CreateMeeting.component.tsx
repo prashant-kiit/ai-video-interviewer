@@ -20,7 +20,7 @@ export default function CreateMeetingForm() {
         console.log("Meeting created successfully");
       } else {
         console.error("Error in create meeting:", result.error);
-        setErrorMessage(result.error as string);
+        setErrorMessage(result.error);
       }
     } catch (error) {
       console.error("Error:", error);

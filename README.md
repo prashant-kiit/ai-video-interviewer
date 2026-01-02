@@ -28,6 +28,7 @@ Todos:
 12. Refactor the handlers and actions
 13. Add Authentication Middleware 
 14. Add Owner User in Meeting record
+15. Add route protection for authenticated users
 
 
 Go Package Management:

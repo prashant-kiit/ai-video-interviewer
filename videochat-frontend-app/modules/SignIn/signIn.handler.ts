@@ -22,6 +22,6 @@ export async function signInHandler(formData: FormData) : Promise<{ ok: true; to
   } catch (error) {
     const err = error as ApiError;
 
-    return { ok: false, error: err.data as string };
+    return { ok: false, error: err.data ?? "Something went wrong" };
   }
 }

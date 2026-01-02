@@ -7,7 +7,9 @@ type SignUpResponse = {
   username: string;
 };
 
-export async function signUpHandler(formData: FormData) {
+export async function signUpHandler(
+  formData: FormData,
+): Promise<{ ok: true; username: string } | { ok: false; error: string }> {
   const name = formData.get("name");
   const username = formData.get("username");
   const password = formData.get("password");
@@ -19,10 +21,10 @@ export async function signUpHandler(formData: FormData) {
       data: { name, username, password },
     });
 
-    return { ok: true, ...response };
+    return { ok: true, username: response.data.username };
   } catch (error) {
     const err = error as ApiError;
 
-    return { ok: false, error: err.data };
+    return { ok: false, error: err.data ?? "Something went wrong" };
   }
 }

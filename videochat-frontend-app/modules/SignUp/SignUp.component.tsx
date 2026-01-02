@@ -20,7 +20,7 @@ export default function SignUpForm() {
         router.push("/signin");
       } else {
         console.error("Error in user sign up:", result.error);
-        setErrorMessage(result.error as string);
+        setErrorMessage(result.error);
       }
     } catch (error) {
       console.error("Error:", error);

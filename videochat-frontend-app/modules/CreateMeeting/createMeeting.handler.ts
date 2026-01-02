@@ -33,6 +33,6 @@ export async function createMeetingHandler(
   } catch (error) {
     const err = error as ApiError;
 
-    return { ok: false, error: err.data as string };
+    return { ok: false, error: err.data ?? "Something went wrong" };
   }
 }
