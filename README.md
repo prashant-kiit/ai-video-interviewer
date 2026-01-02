@@ -31,6 +31,7 @@ Todos:
 15. Add route protection for authenticated users
 16. Create Instant Meeting
 17. Add Link to Meeting Id after successful creation
+18. Add Suspense wherever needed
 
 
 Go Package Management:
