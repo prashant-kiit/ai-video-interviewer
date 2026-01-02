@@ -1,6 +1,8 @@
 import Header from "../shared/components/Header";
 import type { Metadata } from "next";
 import Footer from "../shared/components/Footer";
+import ClientLayout from "../shared/middlewares/ClientLayout";
+import { Providers as JotaiProviders } from "../shared/store/provider";
 
 export const metadata: Metadata = {
   title: "Video Chat Application",
@@ -17,7 +19,9 @@ export default function RootLayout({
       <body>
         <div className="page">
           <Header title="Video Chat Application" isHorizontalLine />
-          <main>{children}</main>
+          <JotaiProviders>
+            <ClientLayout>{children}</ClientLayout>
+          </JotaiProviders>
           <Footer />
         </div>
       </body>
