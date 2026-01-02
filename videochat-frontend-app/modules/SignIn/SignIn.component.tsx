@@ -6,11 +6,10 @@ import Form from "../../shared/components/Form";
 import FormInput from "../../shared/components/FormInput";
 import Error from "../../shared/components/Error";
 import { useRouter } from "next/navigation";
-import { useAtom } from "jotai";
-import { tokenAtom } from "../../shared/store/tokenAtom";
+import { useToken } from "../../shared/store/tokenAtom";
 
 export default function SignInForm() {
-  const [, setToken] = useAtom(tokenAtom);
+  const { setToken } = useToken();
   const [errorMessage, setErrorMessage] = useState<string | "">("");
   const router = useRouter();
 

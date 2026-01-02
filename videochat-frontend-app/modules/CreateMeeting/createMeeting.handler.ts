@@ -9,6 +9,7 @@ type CreateMeetingResponse = {
 
 export async function createMeetingHandler(
   formData: FormData,
+  token: string
 ): Promise<{ ok: true; meetingId: string } | { ok: false; error: string }> {
   const meetingName = formData.get("meeting-name");
   const meetingDate = formData.get("meeting-date");
@@ -21,6 +22,9 @@ export async function createMeetingHandler(
       method: "POST",
       url: "/createmeeting",
       data: { meetingName, meetingDate, meetingTime },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
     
     console.log("Meeting created successfully", response);

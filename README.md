@@ -26,6 +26,7 @@ Todos:
 10. Implement Role-Based Access Control
 11. Add CORS
 12. Refactor the handlers and actions
+13. Add Authentication Middleware 
 
 
 Go Package Management:

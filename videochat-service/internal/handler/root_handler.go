@@ -6,6 +6,7 @@ import (
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/controller"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/infra"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/service"
+	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/shared"
 )
 
 type RootHandler struct {
@@ -51,7 +52,7 @@ func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.users.SignIn(w, r)
 		
 	case r.Method == http.MethodPost && r.URL.Path == "/createmeeting":
-		h.meetings.Create(w, r)
+		shared.AuthMiddleware(http.HandlerFunc(h.meetings.Create)).ServeHTTP(w, r)
 
 	default:
 		http.NotFound(w, r)
