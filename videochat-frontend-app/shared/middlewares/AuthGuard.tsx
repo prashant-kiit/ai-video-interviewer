@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import SignUpLink from "../../modules/SignUp/SignUp.interface";
-import SignInLink from "../../modules/SignIn/SignIn.interface";
 import { useToken } from "../../shared/store/token";
+import HomeMenu from "@/modules/HomeMenu/HomeMenu.component";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -33,10 +32,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       ) : isAuthenticated ? (
         children
       ) : (
-        <div>
-          <SignUpLink />
-          <SignInLink />
-        </div>
+        <HomeMenu />
       )}
     </div>
   );

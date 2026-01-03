@@ -20,7 +20,7 @@ export default function SignInForm() {
       if (result.ok) {
         console.log("User logged in successfully");
         storeToken(result.token);
-        router.push("/dashboard");
+        router.push("/");
       } else {
         console.error("Error in user login:", result.error);
         setErrorMessage(result.error);

@@ -1,10 +1,11 @@
-import HomeMenu from "../modules/HomeMenu/HomeMenu.component";
+import CreateMeetingLink from "../modules/CreateMeeting/CreateMeeting.interface";
+// import JoinMeeting from "../../shared/components/JoinMeeting";
 
-export default function Home() {
-
+export default function DashboardPage() {
   return (
     <div>
-      <HomeMenu/>
+      <CreateMeetingLink/>
+      {/*<JoinMeetingLink/>*/}
     </div>
   );
 }

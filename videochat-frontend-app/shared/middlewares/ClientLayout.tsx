@@ -11,7 +11,7 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  
+
   const isProtected = Routes[pathname]?.isProtected;
   const headerTitle = Routes[pathname]?.header;
   const headerSize = Routes[pathname]?.headerSize;
@@ -22,6 +22,7 @@ export default function ClientLayout({
     <main>
       <Header title={headerTitle} size={headerSize} />
       {isProtected ? <AuthGuard>{children}</AuthGuard> : <>{children}</>}
+      {/*{children}*/}
     </main>
   );
 }

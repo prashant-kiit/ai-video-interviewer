@@ -1,6 +1,6 @@
 export const Routes : Record<string, { name: string; isProtected: boolean; header: string; headerSize: number }> = {
   "/": {
-    name: "Home",
+    name: "Dashboard",
     isProtected: true,
     header: "Welcome to the Video Chat Application",
     headerSize: 2
@@ -17,10 +17,10 @@ export const Routes : Record<string, { name: string; isProtected: boolean; heade
     header: "Sign Up",
     headerSize: 2
   },
-  "/dashboard": {
-    name: "Dashboard",
+  "/onboarding": {
+    name: "Onboarding",
     isProtected: true,
-    header: "Dashboard",
+    header: "Onboarding",
     headerSize: 2
   },
   "/createmeeting": {
