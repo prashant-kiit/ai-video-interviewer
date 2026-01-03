@@ -1,16 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useToken } from "../../shared/store/token";
 import { Loader } from "../components/Loader";
 import { useRouter } from "next/navigation";
-
-enum AuthenticationState {
-  Loading,
-  Authenticated,
-  Unauthenticated,
-  Error,
-}
+import { useAuth, AuthenticationState } from "../../shared/hooks/useAuth";
 
 export default function AuthGuard({
   suspense,
@@ -19,10 +11,11 @@ export default function AuthGuard({
   suspense: React.ReactNode;
   children: React.ReactNode;
 }) {
-  const [authenticationState, setAuthenticationState] =
-    useState<AuthenticationState>(AuthenticationState.Loading);
-  const { getToken } = useToken();
   const router = useRouter();
+  const redirection = () => {
+    router.push("/onboarding");
+  };
+  const { authenticationState } = useAuth(redirection);
 
   const AuthenticationStateResponse: Record<
     AuthenticationState,
@@ -33,22 +26,6 @@ export default function AuthGuard({
     [AuthenticationState.Unauthenticated]: suspense,
     [AuthenticationState.Error]: suspense,
   };
-
-  useEffect(() => {
-    (() => {
-      try {
-        const token = getToken();
-        if (token) {
-          setAuthenticationState(AuthenticationState.Authenticated);
-        } else {
-          router.push("/onboarding");
-        }
-      } catch (error) {
-        console.error(error);
-        setAuthenticationState(AuthenticationState.Error);
-      }
-    })();
-  }, [getToken, router]);
 
   return <div>{AuthenticationStateResponse[authenticationState]}</div>;
 }

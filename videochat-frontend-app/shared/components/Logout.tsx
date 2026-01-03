@@ -1,22 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useToken } from "../store/token";
 import ClientButton from "./ClientButton";
 import { Loader } from "./Loader";
-
-enum AuthenticationState {
-  Loading,
-  Authenticated,
-  Unauthenticated,
-  Error,
-}
+import { useAuth, AuthenticationState } from "../hooks/useAuth";
 
 export default function Logout() {
-  const [authenticationState, setAuthenticationState] = useState(
-    AuthenticationState.Loading,
-  );
-  const { getToken, removeToken } = useToken();
+  const { authenticationState } = useAuth();
+  const { removeToken } = useToken();
 
   const handleLogout = () => {
     removeToken();
@@ -33,22 +24,6 @@ export default function Logout() {
     [AuthenticationState.Unauthenticated]: <></>,
     [AuthenticationState.Error]: <></>,
   };
-
-  useEffect(() => {
-    (() => {
-      try {
-        const token = getToken();
-        if (token) {
-          setAuthenticationState(AuthenticationState.Authenticated);
-        } else {
-          setAuthenticationState(AuthenticationState.Unauthenticated);
-        }
-      } catch (error) {
-        console.error(error);
-        setAuthenticationState(AuthenticationState.Error);
-      }
-    })();
-  }, [getToken]);
 
   return <div>{AuthenticationStateResponse[authenticationState]}</div>;
 }
