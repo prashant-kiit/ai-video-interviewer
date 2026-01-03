@@ -18,7 +18,7 @@ export default function RootLayout({
     <html>
       <body>
         <JotaiProviders>
-          <Header title="Video Chat Application" isHorizontalLine />
+          <Header title="Video Chat Application" isHorizontalLine isTopHeader />
           <ClientLayout>{children}</ClientLayout>
           <Footer />
         </JotaiProviders>

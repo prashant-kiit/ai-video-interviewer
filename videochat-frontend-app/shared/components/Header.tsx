@@ -1,7 +1,10 @@
+import Logout from "./Logout";
+
 type HeaderProps = {
   title: string;
   isHorizontalLine?: boolean;
   size?: number;
+  isTopHeader?: boolean;
 };
 
 const getHeadeeTagBySize = (size: number, title: string) => {
@@ -27,10 +30,20 @@ export default function Header({
   title,
   isHorizontalLine = false,
   size = 1,
+  isTopHeader = false,
 }: HeaderProps) {
   return (
     <div>
-      {getHeadeeTagBySize(size, title)}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        {getHeadeeTagBySize(size, title)}
+        {isTopHeader && <Logout />}
+      </div>
       {isHorizontalLine && <hr />}
     </div>
   );

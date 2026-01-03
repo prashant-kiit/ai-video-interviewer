@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useToken } from "../../shared/store/token";
-import { Loader } from "../components/Loader";
-import { useRouter } from "next/navigation";
+import { useToken } from "../store/token";
+import ClientButton from "./ClientButton";
+import { Loader } from "./Loader";
 
 enum AuthenticationState {
   Loading,
@@ -12,26 +12,26 @@ enum AuthenticationState {
   Error,
 }
 
-export default function AuthGuard({
-  suspense,
-  children,
-}: {
-  suspense: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  const [authenticationState, setAuthenticationState] =
-    useState<AuthenticationState>(AuthenticationState.Loading);
-  const { getToken } = useToken();
-  const router = useRouter();
+export default function Logout() {
+  const [authenticationState, setAuthenticationState] = useState(
+    AuthenticationState.Loading,
+  );
+  const { getToken, removeToken } = useToken();
+
+  const handleLogout = () => {
+    removeToken();
+  };
 
   const AuthenticationStateResponse: Record<
     AuthenticationState,
     React.ReactNode
   > = {
     [AuthenticationState.Loading]: <Loader />,
-    [AuthenticationState.Authenticated]: children,
-    [AuthenticationState.Unauthenticated]: suspense,
-    [AuthenticationState.Error]: suspense,
+    [AuthenticationState.Authenticated]: (
+      <ClientButton name="Log out" handler={handleLogout} />
+    ),
+    [AuthenticationState.Unauthenticated]: <></>,
+    [AuthenticationState.Error]: <></>,
   };
 
   useEffect(() => {
@@ -41,14 +41,14 @@ export default function AuthGuard({
         if (token) {
           setAuthenticationState(AuthenticationState.Authenticated);
         } else {
-          router.push("/onboarding");
+          setAuthenticationState(AuthenticationState.Unauthenticated);
         }
       } catch (error) {
         console.error(error);
         setAuthenticationState(AuthenticationState.Error);
       }
     })();
-  }, [getToken, router]);
+  }, [getToken]);
 
   return <div>{AuthenticationStateResponse[authenticationState]}</div>;
 }
