@@ -2,38 +2,54 @@
 
 import { useEffect, useState } from "react";
 import { useToken } from "../../shared/store/token";
-import HomeMenu from "@/modules/HomeMenu/HomeMenu.component";
+import { Loader } from "../components/Loader";
+import { useRouter } from "next/navigation";
 
-export default function AuthGuard({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+enum AuthenticationState {
+  Loading,
+  Authenticated,
+  Unauthenticated,
+  Error,
+}
+
+export default function AuthGuard({
+  suspense,
+  children,
+}: {
+  suspense: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const [authenticationState, setAuthenticationState] =
+    useState<AuthenticationState>(AuthenticationState.Loading);
   const { getToken } = useToken();
+  const router = useRouter();
+
+  const AuthenticationStateResponse: Record<
+    AuthenticationState,
+    React.ReactNode
+  > = {
+    [AuthenticationState.Loading]: <Loader />,
+    [AuthenticationState.Authenticated]: children,
+    [AuthenticationState.Unauthenticated]: suspense,
+    [AuthenticationState.Error]: suspense,
+  };
 
   useEffect(() => {
     (() => {
       try {
-        setIsLoading(true);
         const token = getToken();
         if (token) {
-          setIsAuthenticated(true);
+          setAuthenticationState(AuthenticationState.Authenticated);
+        } else {
+          // setAuthenticationState(AuthenticationState.Unauthenticated);
+          router.push("/onboarding");
         }
       } catch (error) {
         console.error(error);
-      } finally {
-        setIsLoading(false);
+        setAuthenticationState(AuthenticationState.Error);
       }
     })();
-  }, [getToken]);
+  }, [getToken, router]);
 
-  return (
-    <div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : isAuthenticated ? (
-        children
-      ) : (
-        <HomeMenu />
-      )}
-    </div>
-  );
+  return <div>{AuthenticationStateResponse[authenticationState]}</div>;
 }

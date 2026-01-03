@@ -1,32 +1,41 @@
-export const Routes : Record<string, { name: string; isProtected: boolean; header: string; headerSize: number }> = {
+export const Routes: Record<
+  string,
+  { name: string; isProtected: boolean; subHeader: string; headerSize: number }
+> = {
   "/": {
     name: "Dashboard",
+    subHeader: "Welcome to the Video Chat Application",
+    headerSize: 2,
     isProtected: true,
-    header: "Welcome to the Video Chat Application",
-    headerSize: 2
   },
   "/signin": {
     name: "SignIn",
+    subHeader: "Sign In",
+    headerSize: 2,
     isProtected: false,
-    header: "Sign In",
-    headerSize: 2
   },
   "/signup": {
     name: "SignUp",
+    subHeader: "Sign Up",
+    headerSize: 2,
     isProtected: false,
-    header: "Sign Up",
-    headerSize: 2
-  },
-  "/onboarding": {
-    name: "Onboarding",
-    isProtected: true,
-    header: "Onboarding",
-    headerSize: 2
   },
   "/createmeeting": {
     name: "CreateMeeting",
+    subHeader: "Create Meeting",
+    headerSize: 2,
     isProtected: true,
-    header: "Create Meeting",
-    headerSize: 2
+  },
+  "/onboarding": {
+    name: "Onboarding",
+    subHeader: "Get Onboarded",
+    headerSize: 2,
+    isProtected: false,
+  },
+  "/notfound": {
+    name: "NotFound",
+    subHeader: "404 Page Not Found",
+    headerSize: 2,
+    isProtected: false,
   },
 };

@@ -17,13 +17,11 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        <div className="page">
+        <JotaiProviders>
           <Header title="Video Chat Application" isHorizontalLine />
-          <JotaiProviders>
-            <ClientLayout>{children}</ClientLayout>
-          </JotaiProviders>
+          <ClientLayout>{children}</ClientLayout>
           <Footer />
-        </div>
+        </JotaiProviders>
       </body>
     </html>
   );

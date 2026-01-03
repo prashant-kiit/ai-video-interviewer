@@ -1,7 +1,7 @@
 import SignUpLink from "../SignUp/SignUp.interface";
 import SignInLink from "../SignIn/SignIn.interface";
 
-export default function HomeMenu() {
+export default function Onboarding() {
   return (
     <div>
       <SignUpLink />

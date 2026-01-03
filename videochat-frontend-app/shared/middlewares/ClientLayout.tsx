@@ -2,8 +2,9 @@
 
 import { usePathname } from "next/navigation";
 import { Routes } from "./Route";
-import AuthGuard from "./AuthGuard";
 import Header from "../components/Header";
+import Onboarding from "../../modules/Onboarding/Onboarding.component";
+import AuthGuardProvider from "./AuthGuardProvider";
 
 export default function ClientLayout({
   children,
@@ -12,17 +13,19 @@ export default function ClientLayout({
 }) {
   const pathname = usePathname();
 
-  const isProtected = Routes[pathname]?.isProtected;
-  const headerTitle = Routes[pathname]?.header;
-  const headerSize = Routes[pathname]?.headerSize;
+  const route = Routes[pathname] || Routes["/notfound"];
+  const isProtected = route.isProtected;
+  const subHeader = route.subHeader;
+  const headerSize = route.headerSize;
 
-  console.log("pathname", pathname, isProtected);
+  console.log("pathname", route, pathname, isProtected);
 
   return (
-    <main>
-      <Header title={headerTitle} size={headerSize} />
-      {isProtected ? <AuthGuard>{children}</AuthGuard> : <>{children}</>}
-      {/*{children}*/}
-    </main>
+    <AuthGuardProvider isProtected={isProtected} suspense={<Onboarding />}>
+      <main>
+        <Header title={subHeader} size={headerSize} />
+        {children}
+      </main>
+    </AuthGuardProvider>
   );
 }
