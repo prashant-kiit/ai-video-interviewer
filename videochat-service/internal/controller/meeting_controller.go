@@ -25,10 +25,10 @@ func (c *MeetingController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c.MeetingService.CreateMeeting(req, r)
-
-	resp := model.CreateMeetingResponse{
-		MeetingID: "123",
+	resp, err := c.MeetingService.CreateMeeting(req, r)
+	if err != nil {
+		shared.SendError(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	shared.SendJSON(w, http.StatusCreated, "meeting created", resp)

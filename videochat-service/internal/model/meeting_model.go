@@ -11,9 +11,15 @@ type CreateMeetingResponse struct {
 }
 
 type Meeting struct {
-	ID      string `json:"id"`
-	OwnerID string `json:"ownerId"`
-	Name    string `json:"name"`
-	Date    string `json:"date"`
-	Time    string `json:"time"`
+	ID       string `json:"id"`
+	OwnerID  string `json:"ownerId"`
+	Name     string `json:"name"`
+	Date     string `json:"date"`
+	Time     string `json:"time"`
+	Passcode string `json:"passcode"`
+}
+
+type MeetingResponse struct {
+	MeetingID       string `json:"meetingId"`
+	MeetingPasscode string `json:"meetingPasscode"`
 }

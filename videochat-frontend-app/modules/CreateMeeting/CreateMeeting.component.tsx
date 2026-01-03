@@ -10,7 +10,10 @@ import { useToken } from "../../shared/store/token";
 
 export default function CreateMeetingForm() {
   const { getToken } = useToken();
-  const [banner, setBanner] = useState<{ message: string, color?: string }>({ message: "", color: "" });
+  const [banner, setBanner] = useState<{ message: string; color?: string }>({
+    message: "",
+    color: "",
+  });
 
   async function onSubmit(formData: FormData) {
     try {
@@ -18,7 +21,10 @@ export default function CreateMeetingForm() {
       console.log("Result:", result);
       if (result.ok) {
         console.log("Meeting created successfully");
-        setBanner({ message: `Meeting created successfully. Meeting ID: ${result.meetingId}`, color: "green" });
+        setBanner({
+          message: `Meeting created successfully. Meeting ID: ${result.meetingId} Meeting Passcode: ${result.meetingPasscode}`,
+          color: "green",
+        });
       } else {
         console.error("Error in create meeting:", result.error);
         setBanner({ message: result.error });
