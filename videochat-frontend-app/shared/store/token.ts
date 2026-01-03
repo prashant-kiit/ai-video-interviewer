@@ -18,7 +18,7 @@ export const useToken = () => {
   };
 
   const removeToken = () => {
-    localStorage.removeItem(tokenKey);
+    localStorage.setItem(tokenKey, "");
     setCachedToken("");
   };
 
