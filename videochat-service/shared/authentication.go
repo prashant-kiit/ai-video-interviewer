@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"os"
@@ -54,6 +55,20 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if !ok {
+			SendError(w, "invalid claims", http.StatusUnauthorized)
+			return
+		}
+
+		username, ok := claims["username"].(string)
+		if !ok {
+			SendError(w, "missing / invalid username", http.StatusUnauthorized)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), "username", username)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

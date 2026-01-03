@@ -9,3 +9,11 @@ type CreateMeetingRequest struct {
 type CreateMeetingResponse struct {
 	MeetingID string `json:"meetingId"`
 }
+
+type Meeting struct {
+	ID      string `json:"id"`
+	OwnerID string `json:"ownerId"`
+	Name    string `json:"name"`
+	Date    string `json:"date"`
+	Time    string `json:"time"`
+}
