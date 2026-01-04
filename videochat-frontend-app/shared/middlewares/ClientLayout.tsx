@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { Routes } from "./Route";
 import Header from "../components/Header";
-import Onboarding from "../../modules/Onboarding/Onboarding.component";
 import AuthGuardProvider from "./AuthGuardProvider";
 
 export default function ClientLayout({
