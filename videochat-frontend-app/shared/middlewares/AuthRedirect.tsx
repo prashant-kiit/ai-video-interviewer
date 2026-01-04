@@ -1,6 +1,6 @@
 "use client";
 
-import { Children, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader } from "../components/Loader";
 import { useAuth, AuthenticationState } from "../hooks/useAuth";
