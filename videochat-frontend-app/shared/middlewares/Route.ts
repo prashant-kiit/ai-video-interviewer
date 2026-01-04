@@ -1,67 +1,76 @@
-export const Routes: Record<
-  string,
+type TRoute = {
+  route: string;
+  routeRegex: RegExp;
+  name: string;
+  isProtected: boolean;
+  subHeader: string;
+  headerSize: number;
+}
+
+export const Routes: TRoute[] = [
   {
-    route: string;
-    name: string;
-    isProtected: boolean;
-    subHeader: string;
-    headerSize: number;
-  }
-> = {
-  "/": {
     route: "/",
+    routeRegex: /^\/$/,
     name: "Dashboard",
     subHeader: "Welcome to the Video Chat Application",
     headerSize: 2,
     isProtected: true,
   },
-  "/signin": {
+  {
     route: "/signin",
+    routeRegex: /^\/signin$/,
     name: "SignIn",
     subHeader: "Sign In",
     headerSize: 2,
     isProtected: false,
   },
-  "/signup": {
+  {
     route: "/signup",
+    routeRegex: /^\/signup$/,
     name: "SignUp",
     subHeader: "Sign Up",
     headerSize: 2,
     isProtected: false,
   },
-  "/createmeeting": {
+  {
     route: "/createmeeting",
+    routeRegex: /^\/createmeeting$/,
     name: "CreateMeeting",
     subHeader: "Create Meeting",
     headerSize: 2,
     isProtected: true,
   },
-  "/onboarding": {
+  {
     route: "/onboarding",
+    routeRegex: /^\/onboarding$/,
     name: "Onboarding",
     subHeader: "Get Onboarded",
     headerSize: 2,
     isProtected: false,
   },
-  "/meetings": {
-    route: "/meetings",
-    name: "Meetings",
-    subHeader: "Meetings",
+  {
+    route: "/meeting/[0-9]+",
+    routeRegex: /^\/meeting\/[0-9]+$/,
+    name: "Meeting",
+    subHeader: "Meeting",
     headerSize: 2,
     isProtected: true,
   },
-  "/ownedmeetings": {
+  {
     route: "/ownedmeetings",
+    routeRegex: /^\/ownedmeetings$/,
     name: "OwnedMeetings",
     subHeader: "Owned Meetings",
     headerSize: 2,
     isProtected: true,
   },
-  "/notfound": {
-    route: "/notfound",
-    name: "NotFound",
-    subHeader: "404 Page Not Found",
-    headerSize: 2,
-    isProtected: false,
-  },
+];
+
+export const NotFoundRoute: TRoute = {
+  route: "/notfound",
+  routeRegex: /^\/notfound$/,
+  name: "NotFound",
+  subHeader: "404 Page Not Found",
+  headerSize: 2,
+  isProtected: false,
 };

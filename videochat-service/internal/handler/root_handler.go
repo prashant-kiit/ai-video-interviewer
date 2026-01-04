@@ -53,6 +53,9 @@ func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		
 	case r.Method == http.MethodPost && r.URL.Path == "/createmeeting":
 		shared.AuthMiddleware(http.HandlerFunc(h.meetings.Create)).ServeHTTP(w, r)
+	
+	case r.Method == http.MethodGet && r.URL.Path == "/ownedmeetings":
+		shared.AuthMiddleware(http.HandlerFunc(h.meetings.GetOwnMeetings)).ServeHTTP(w, r)
 
 	default:
 		http.NotFound(w, r)

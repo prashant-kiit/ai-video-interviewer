@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -71,4 +72,33 @@ func (s *MeetingService) CreateMeeting(req model.CreateMeetingRequest, r *http.R
 	}
 
 	return resp, nil
+}
+
+func (s *MeetingService) GetOwnedMeetingsByUsername(username string, ctx context.Context) ([]model.MeetingResponse, error) {
+	keys, err := s.Redis.Keys(ctx, "meeting:[0-9]*").Result()
+	if err != nil {
+		return nil, err
+	}
+
+	var meetings []model.MeetingResponse
+	for _, key := range keys {
+		val, err := s.Redis.Get(ctx, key).Result()
+		if err != nil {
+			return nil, err
+		}
+
+		var meeting model.Meeting
+		if err := json.Unmarshal([]byte(val), &meeting); err != nil {
+			return nil, err
+		}
+
+		if meeting.OwnerID == username {
+			meetings = append(meetings, model.MeetingResponse{
+				MeetingID:       meeting.ID,
+				MeetingPasscode: meeting.Passcode,
+			})
+		}
+	}
+
+	return meetings, nil
 }

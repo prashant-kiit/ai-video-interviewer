@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Routes } from "./Route";
+import { Routes, NotFoundRoute } from "./Route";
 import Header from "../components/Header";
 import AuthGuardProvider from "./AuthGuardProvider";
 
@@ -12,13 +12,21 @@ export default function ClientLayout({
 }) {
   const pathname = usePathname();
 
-  const route = Routes[pathname] || Routes["/notfound"];
-  const isProtected = route.isProtected;
-  const subHeader = route.subHeader;
-  const headerSize = route.headerSize;
+  let finalRoute = NotFoundRoute;
+
+  for (const route of Routes) {
+    if (route.routeRegex.test(pathname)) {
+      finalRoute = route;
+      break;
+    }
+  }
+
+  const isProtected = finalRoute.isProtected;
+  const subHeader = finalRoute.subHeader;
+  const headerSize = finalRoute.headerSize;
 
   return (
-    <AuthGuardProvider isProtected={isProtected} route={route.route}>
+    <AuthGuardProvider isProtected={isProtected} route={finalRoute.route}>
       <main>
         <Header title={subHeader} size={headerSize} />
         {children}

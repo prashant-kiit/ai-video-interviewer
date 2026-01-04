@@ -1,9 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
+import type { OwnedMeetingResponse } from "../../modules/OwnedMeetings/OwnedMeetings.handler";
 
-export type Meeting = {
-  meetingId: string;
-  passcode: string;
-};
+export type Meeting = OwnedMeetingResponse;
 
 export const getColumns = (
   onJoin: (meetingId: string) => void,
@@ -16,7 +14,7 @@ export const getColumns = (
     },
     {
       header: "Passcode",
-      accessorKey: "passcode",
+      accessorKey: "meetingPasscode",
     },
     {
       header: "Join",

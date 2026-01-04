@@ -33,3 +33,20 @@ func (c *MeetingController) Create(w http.ResponseWriter, r *http.Request) {
 
 	shared.SendJSON(w, http.StatusCreated, "meeting created", resp)
 }
+
+func (c *MeetingController) GetOwnMeetings(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	username, ok := ctx.Value("username").(string)
+	if !ok {
+		shared.SendError(w, "username not found in context", http.StatusBadRequest)
+		return
+	}
+
+	meetings, err := c.MeetingService.GetOwnedMeetingsByUsername(username, ctx)
+	if err != nil {
+		shared.SendError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	shared.SendJSON(w, http.StatusOK, "owned meetings retrieved", meetings)
+}

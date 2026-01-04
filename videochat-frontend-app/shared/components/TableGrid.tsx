@@ -1,9 +1,20 @@
 "use client";
 
-import { flexRender, Table } from "@tanstack/react-table";
-import { Meeting } from "../../shared/hooks/columns";
+import { flexRender } from "@tanstack/react-table";
+import useTable from "../../shared/hooks/useTable";
+import { getColumns, Meeting } from "../../shared/hooks/columns";
 
-export default function TableGrid({ table }: { table: Table<Meeting> }) {
+export default function TableGrid({
+  data,
+  onJoin,
+  onRemove,
+}: {
+  data: Meeting[];
+  onJoin: (meetingId: string) => void;
+  onRemove: (meetingId: string) => void;
+}) {
+  const table = useTable(data, getColumns, onJoin, onRemove);
+
   return (
     <table border={1}>
       <thead>
