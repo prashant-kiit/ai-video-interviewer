@@ -4,18 +4,18 @@ import { Loader } from "../components/Loader";
 import { useRouter } from "next/navigation";
 import { useAuth, AuthenticationState } from "../../shared/hooks/useAuth";
 
-export default function AuthGuard({
-  suspense,
-  children,
-}: {
-  suspense: React.ReactNode;
-  children: React.ReactNode;
-}) {
+export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const redirection = () => {
+  const redirectionOnUnauthenticated = () => {
     router.push("/onboarding");
   };
-  const { authenticationState } = useAuth(redirection);
+  const redirectionOnError = () => {
+    router.push("/onboarding");
+  };
+  const { authenticationState } = useAuth(
+    redirectionOnUnauthenticated,
+    redirectionOnError,
+  );
 
   const AuthenticationStateResponse: Record<
     AuthenticationState,
@@ -23,9 +23,7 @@ export default function AuthGuard({
   > = {
     [AuthenticationState.Loading]: <Loader />,
     [AuthenticationState.Authenticated]: children,
-    [AuthenticationState.Unauthenticated]: suspense,
-    [AuthenticationState.Error]: suspense,
   };
 
-  return <div>{AuthenticationStateResponse[authenticationState]}</div>;
+  return <div>{AuthenticationStateResponse[authenticationState as AuthenticationState]}</div>;
 }

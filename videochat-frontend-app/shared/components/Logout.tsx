@@ -14,16 +14,15 @@ export default function Logout() {
   };
 
   const AuthenticationStateResponse: Record<
-    AuthenticationState,
+    AuthenticationState | "Unauthenticated",
     React.ReactNode
   > = {
     [AuthenticationState.Loading]: <Loader />,
     [AuthenticationState.Authenticated]: (
       <ClientButton name="Log out" handler={handleLogout} />
     ),
-    [AuthenticationState.Unauthenticated]: <></>,
-    [AuthenticationState.Error]: <></>,
+    "Unauthenticated": <></>,
   };
 
-  return <div>{AuthenticationStateResponse[authenticationState]}</div>;
+  return <div>{AuthenticationStateResponse[authenticationState as AuthenticationState]}</div>;
 }

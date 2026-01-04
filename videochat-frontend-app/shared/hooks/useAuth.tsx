@@ -6,13 +6,14 @@ import { useToken } from "../../shared/store/token";
 export enum AuthenticationState {
   Loading,
   Authenticated,
-  Unauthenticated,
-  Error,
-}
+} 
 
-export function useAuth(redirection?: () => void) {
+export function useAuth(
+  redirectionOnUnauthenticated?: () => void,
+  redirectionOnError?: () => void,
+) {
   const [authenticationState, setAuthenticationState] =
-    useState<AuthenticationState>(AuthenticationState.Loading);
+    useState<AuthenticationState | string>(AuthenticationState.Loading);
   const { getToken } = useToken();
 
   useEffect(() => {
@@ -22,18 +23,18 @@ export function useAuth(redirection?: () => void) {
         if (token) {
           setAuthenticationState(AuthenticationState.Authenticated);
         } else {
-          if (redirection) {
-            redirection();
+          if (redirectionOnUnauthenticated) {
+            redirectionOnUnauthenticated();
           } else {
-            setAuthenticationState(AuthenticationState.Unauthenticated);
+            setAuthenticationState("Unauthenticated");
           }
         }
       } catch (error) {
         console.error(error);
-        setAuthenticationState(AuthenticationState.Error);
+        if (redirectionOnError) redirectionOnError();
       }
     })();
-  }, [getToken, redirection]);
+  }, [getToken, redirectionOnUnauthenticated, redirectionOnError]);
 
   return {
     authenticationState,

@@ -19,7 +19,7 @@ export default function ClientLayout({
   const headerSize = route.headerSize;
 
   return (
-    <AuthGuardProvider isProtected={isProtected} suspense={<Onboarding />}>
+    <AuthGuardProvider isProtected={isProtected}>
       <main>
         <Header title={subHeader} size={headerSize} />
         {children}
