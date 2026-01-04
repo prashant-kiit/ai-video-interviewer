@@ -1,6 +1,12 @@
 export const Routes: Record<
   string,
-  { route: string; name: string; isProtected: boolean; subHeader: string; headerSize: number }
+  {
+    route: string;
+    name: string;
+    isProtected: boolean;
+    subHeader: string;
+    headerSize: number;
+  }
 > = {
   "/": {
     route: "/",
@@ -41,6 +47,13 @@ export const Routes: Record<
     route: "/meetings",
     name: "Meetings",
     subHeader: "Meetings",
+    headerSize: 2,
+    isProtected: true,
+  },
+  "/ownedmeetings": {
+    route: "/ownedmeetings",
+    name: "OwnedMeetings",
+    subHeader: "Owned Meetings",
     headerSize: 2,
     isProtected: true,
   },
