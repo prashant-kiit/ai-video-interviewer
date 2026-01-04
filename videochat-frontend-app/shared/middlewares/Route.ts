@@ -32,6 +32,12 @@ export const Routes: Record<
     headerSize: 2,
     isProtected: false,
   },
+  "/meetings": {
+    name: "Meetings",
+    subHeader: "Meetings",
+    headerSize: 2,
+    isProtected: true,
+  },
   "/notfound": {
     name: "NotFound",
     subHeader: "404 Page Not Found",
