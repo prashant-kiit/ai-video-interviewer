@@ -25,8 +25,6 @@ export async function createMeetingHandler(
         Authorization: `Bearer ${token}`
       }
     });
-    
-    console.log("Meeting created successfully", response);
 
     return { ok: true, meetingId: response.data.meetingId, meetingPasscode: response.data.meetingPasscode };
   } catch (error) {
