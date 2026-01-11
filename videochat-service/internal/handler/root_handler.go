@@ -10,9 +10,9 @@ import (
 )
 
 type RootHandler struct {
-	root   controller.RootController
-	health controller.HealthController
-	users  controller.UserController
+	root     controller.RootController
+	health   controller.HealthController
+	users    controller.UserController
 	meetings controller.MeetingController
 }
 
@@ -47,15 +47,18 @@ func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case r.Method == http.MethodPost && r.URL.Path == "/signup":
 		h.users.Create(w, r)
-		
+
 	case r.Method == http.MethodPost && r.URL.Path == "/signin":
 		h.users.SignIn(w, r)
-		
+
 	case r.Method == http.MethodPost && r.URL.Path == "/createmeeting":
 		shared.AuthMiddleware(http.HandlerFunc(h.meetings.Create)).ServeHTTP(w, r)
-	
+
 	case r.Method == http.MethodGet && r.URL.Path == "/ownedmeetings":
 		shared.AuthMiddleware(http.HandlerFunc(h.meetings.GetOwnMeetings)).ServeHTTP(w, r)
+
+	case r.Method == http.MethodPost && r.URL.Path == "/recordingupload":
+		shared.AuthMiddleware(http.HandlerFunc(h.meetings.UploadMeetingRecords)).ServeHTTP(w, r)
 
 	default:
 		http.NotFound(w, r)

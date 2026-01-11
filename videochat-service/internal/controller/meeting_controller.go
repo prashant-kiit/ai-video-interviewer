@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
@@ -49,4 +50,43 @@ func (c *MeetingController) GetOwnMeetings(w http.ResponseWriter, r *http.Reques
 	}
 
 	shared.SendJSON(w, http.StatusOK, "owned meetings retrieved", meetings)
+}
+
+func (c *MeetingController) UploadMeetingRecords(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	r.Body = http.MaxBytesReader(w, r.Body, 100<<20) // 100MB
+	if err := r.ParseMultipartForm(100 << 20); err != nil {
+		shared.SendError(w, "invalid multipart form", http.StatusBadRequest)
+		return
+	}
+
+	username, ok := ctx.Value("username").(string)
+	if !ok {
+		shared.SendError(w, "username not found in context", http.StatusBadRequest)
+		return
+	}
+
+	meetingId := r.FormValue("meetingId")
+	if meetingId == "" {
+		shared.SendError(w, "meetingId missing", http.StatusBadRequest)
+		return
+	}
+
+	timestamp := r.FormValue("timestamp")
+	if timestamp == "" {
+		shared.SendError(w, "timestamp missing", http.StatusBadRequest)
+		return
+	}
+
+	file, _, err := r.FormFile("chunk")
+	if err != nil {
+		shared.SendError(w, "chunk missing", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	filename := fmt.Sprintf("recordingchunk-%s-%s-%s", username, meetingId, timestamp)
+
+	shared.SendJSON(w, http.StatusOK, "chunk uploaded", fmt.Sprintf("chunk uploaded, with filename %s", filename))
 }

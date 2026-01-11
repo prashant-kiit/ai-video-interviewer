@@ -13,7 +13,7 @@ export default function MeetingClient({ meetingId }: { meetingId: string }) {
     videoOn,
     audioOn,
     toggleRecording,
-  } = useVideoStreamer();
+  } = useVideoStreamer(meetingId);
 
   return (
     <div>
