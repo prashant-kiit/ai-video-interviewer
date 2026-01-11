@@ -1,7 +1,7 @@
-export function Loader() {
+export function Loader({ message = "Loading..." }) {
   return (
     <div>
-      <p>Loading...</p>
+      <p>{message}</p>
     </div>
   );
 }

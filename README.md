@@ -59,3 +59,31 @@ go build / go run
 Auto-downloads missing deps
 
 Fails if go.sum checksum doesn’t match
+
+const toggleVideo = () => {
+  if (!stream || !recorderRef.current) return;
+
+  const videoTrack = stream.getVideoTracks()[0];
+  videoTrack.enabled = !videoTrack.enabled;
+  setVideoOn(videoTrack.enabled);
+
+  if (!videoTrack.enabled && !audioOn) {
+    recorderRef.current.pause();
+  } else {
+    recorderRef.current.resume();
+  }
+};
+
+const toggleAudio = () => {
+  if (!stream || !recorderRef.current) return;
+
+  const audioTrack = stream.getAudioTracks()[0];
+  audioTrack.enabled = !audioTrack.enabled;
+  setAudioOn(audioTrack.enabled);
+
+  if (!audioTrack.enabled && !videoOn) {
+    recorderRef.current.pause();
+  } else {
+    recorderRef.current.resume();
+  }
+};
