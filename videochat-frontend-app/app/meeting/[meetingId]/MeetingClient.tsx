@@ -1,12 +1,13 @@
 "use client";
 
 import { Loader } from "@/shared/components/Loader";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 export default function MeetingClient({ meetingId }: { meetingId: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  // const recorderRef = useRef<MediaRecorder | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [recording, setRecording] = useState<MediaRecorder | null>(null);
   const [videoOn, setVideoOn] = useState(true);
   const [audioOn, setAudioOn] = useState(true);
 
@@ -22,6 +23,20 @@ export default function MeetingClient({ meetingId }: { meetingId: string }) {
     setStream(mediaStream);
   };
 
+  const startMediaLog = useCallback(() => {
+    if (!stream) return;
+
+    stream.getTracks().forEach((track) => {
+      console.log(
+        `[${track.kind}] enabled=${track.enabled}, readyState=${track.readyState}`,
+      );
+
+      track.onended = () => console.log(`${track.kind} track ended`);
+      track.onmute = () => console.log(`${track.kind} muted`);
+      track.onunmute = () => console.log(`${track.kind} unmuted`);
+    });
+  }, [stream]);
+
   useEffect(() => {
     (() => {
       startMedia();
@@ -29,55 +44,35 @@ export default function MeetingClient({ meetingId }: { meetingId: string }) {
   }, []);
 
   useEffect(() => {
-    if (!stream) return;
+    (() => {
+      startMediaLog();
+    })();
+  }, [stream, videoOn, audioOn, startMediaLog]);
 
-    console.log("Stream ID:", stream.id);
-    console.log("Active:", stream.active);
-    console.log("Tracks:", stream.getTracks());
+  // useEffect(() => {
+  //   if (!stream) return;
 
-    stream.getTracks().forEach((track) => {
-      console.log(
-        `[${track.kind}] enabled=${track.enabled}, readyState=${track.readyState}`,
-      );
+  //   const recorder = new MediaRecorder(stream, {
+  //     mimeType: "video/webm; codecs=vp8,opus",
+  //   });
 
-      track.onended = () => {
-        console.log(`${track.kind} track ended`);
-      };
+  //   // recorderRef.current = recorder;
 
-      track.onmute = () => {
-        console.log(`${track.kind} muted`);
-      };
+  //   recorder.ondataavailable = (event) => {
+  //     if (event.data.size > 0) {
+  //       // console.log("Chunk:", event.data);
+  //     }
+  //   };
 
-      track.onunmute = () => {
-        console.log(`${track.kind} unmuted`);
-      };
-    });
-  }, [stream, videoOn, audioOn]);
+  //   recorder.onstart = () => console.log("Recording started");
+  //   recorder.onstop = () => console.log("Recording stopped");
 
-  useEffect(() => {
-    if (!stream) return;
+  //   recorder.start(1000);
 
-    const recorder = new MediaRecorder(stream, {
-      mimeType: "video/webm; codecs=vp8,opus",
-    });
-
-    // recorderRef.current = recorder;
-
-    recorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        console.log("Chunk:", event.data);
-      }
-    };
-
-    recorder.onstart = () => console.log("Recording started");
-    recorder.onstop = () => console.log("Recording stopped");
-
-    recorder.start(1000);
-
-    return () => {
-      recorder.stop();
-    };
-  }, [stream]);
+  //   return () => {
+  //     recorder.stop();
+  //   };
+  // }, [stream]);
 
   const toggleVideo = () => {
     stream?.getVideoTracks().forEach((track) => {
@@ -93,6 +88,32 @@ export default function MeetingClient({ meetingId }: { meetingId: string }) {
     });
   };
 
+  const toggleRecording = () => {
+    if (!recording) {
+      if (!stream) return;
+
+      const recorder = new MediaRecorder(stream, {
+        mimeType: "video/webm; codecs=vp8,opus",
+      });
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          console.log("Chunk:", event.data);
+        }
+      };
+
+      recorder.onstart = () => console.log("Recording started");
+      recorder.onstop = () => console.log("Recording stopped");
+
+      recorder.start(1000);
+      recorderRef.current = recorder;
+      setRecording(recorder);
+    } else {
+      recorderRef.current?.stop();
+      recorderRef.current = null;
+      setRecording(null);
+    }
+  };
+
   return (
     <div>
       <div>
@@ -106,12 +127,13 @@ export default function MeetingClient({ meetingId }: { meetingId: string }) {
         <button onClick={toggleVideo}>
           {videoOn ? "Turn Camera Off" : "Turn Camera On"}
         </button>
-
         <button onClick={toggleAudio}>
           {audioOn ? "Mute Mic" : "Unmute Mic"}
         </button>
+        <button onClick={toggleRecording} disabled={!stream}>
+          {recording ? "Stop Recording" : "Start Recording"}
+        </button>
       </div>
-
       <p>Meeting {meetingId}</p>
     </div>
   );
