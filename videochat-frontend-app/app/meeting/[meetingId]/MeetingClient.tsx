@@ -65,16 +65,14 @@ export default function MeetingClient({ meetingId }: { meetingId: string }) {
 
     recorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
-        // console.log("Chunk:", event.data);
-        // console.log("Chunk size:", event.data.size);
-        // console.log("Chunk type:", event.data.type);
+        console.log("Chunk:", event.data);
       }
     };
 
     recorder.onstart = () => console.log("Recording started");
     recorder.onstop = () => console.log("Recording stopped");
 
-    recorder.start(1000); // ⏱ emits chunk every 1 second
+    recorder.start(1000);
 
     return () => {
       recorder.stop();
