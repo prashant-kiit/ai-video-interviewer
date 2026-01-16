@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/controller"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/infra"
@@ -59,6 +60,9 @@ func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case r.Method == http.MethodPost && r.URL.Path == "/recordingupload":
 		shared.AuthMiddleware(http.HandlerFunc(h.meetings.UploadMeetingRecords)).ServeHTTP(w, r)
+
+	case r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/recordingsave/"):
+		shared.AuthMiddleware(http.HandlerFunc(h.meetings.SaveMeetingRecords)).ServeHTTP(w, r)
 
 	default:
 		http.NotFound(w, r)

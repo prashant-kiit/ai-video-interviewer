@@ -2,7 +2,14 @@ package controller
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+	"time"
 
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/service"
@@ -55,7 +62,6 @@ func (c *MeetingController) GetOwnMeetings(w http.ResponseWriter, r *http.Reques
 func (c *MeetingController) UploadMeetingRecords(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	r.Body = http.MaxBytesReader(w, r.Body, 100<<20) // 100MB
 	if err := r.ParseMultipartForm(100 << 20); err != nil {
 		shared.SendError(w, "invalid multipart form", http.StatusBadRequest)
 		return
@@ -86,7 +92,66 @@ func (c *MeetingController) UploadMeetingRecords(w http.ResponseWriter, r *http.
 	}
 	defer file.Close()
 
-	filename := fmt.Sprintf("recordingchunk-%s-%s-%s", username, meetingId, timestamp)
+	data, err := io.ReadAll(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	filename := fmt.Sprintf("meetingrecording-%s-%s-current.webm", username, meetingId)
+
+	saveChunk(filename, data)
 
 	shared.SendJSON(w, http.StatusOK, "chunk uploaded", fmt.Sprintf("chunk uploaded, with filename %s", filename))
+}
+
+func (c *MeetingController) SaveMeetingRecords(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	username, ok := ctx.Value("username").(string)
+	if !ok {
+		shared.SendError(w, "username not found in context", http.StatusBadRequest)
+		return
+	}
+
+	urlpath := strings.TrimPrefix(r.URL.Path, "/recordingsave/")
+	meetingId := strings.Trim(urlpath, "/")
+	if meetingId == "" {
+		shared.SendError(w, "meetingId missing", http.StatusBadRequest)
+		return
+	}
+
+	timestamp := time.Now()
+
+	oldfilename := fmt.Sprintf("meetingrecording-%s-%s-current.webm", username, meetingId)
+	newfilename := fmt.Sprintf("meetingrecording-%s-%s-%s.webm", username, meetingId, timestamp.Format("20060102150405"))
+
+	path := filepath.Join("recordings", oldfilename)
+	if _, err := os.Stat(path); err == nil {
+		fmt.Println("File exists, rename by", newfilename)
+		os.Rename(path, filepath.Join("recordings", newfilename))
+	} else if os.IsNotExist(err) {
+		fmt.Println("File not found")
+	}
+
+	shared.SendJSON(w, http.StatusOK, "recording saved", fmt.Sprintf("recording saved, with filename %s", newfilename))
+}
+
+var mu sync.Mutex
+
+func saveChunk(filename string, data []byte) error {
+	mu.Lock()
+	defer mu.Unlock()
+
+	f, err := os.OpenFile(
+		filepath.Join("recordings", filename),
+		os.O_CREATE|os.O_WRONLY|os.O_APPEND,
+		0644,
+	)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = f.Write(data)
+	return err
 }

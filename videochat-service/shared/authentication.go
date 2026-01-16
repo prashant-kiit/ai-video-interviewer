@@ -3,6 +3,7 @@ package shared
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -68,6 +69,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		}
 
 		ctx := context.WithValue(r.Context(), "username", username)
+		fmt.Println(r.URL.Path)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})

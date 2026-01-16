@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { uploadRecording } from "@/app/meeting/[meetingId]/meeting.handler";
+import { uploadRecording, saveRecording } from "@/app/meeting/[meetingId]/meeting.handler";
 import { useToken } from "../store/token";
 
 function useVideoStreamer(meetingId: string) {
@@ -78,13 +78,18 @@ function useVideoStreamer(meetingId: string) {
         formData.append("meetingId", meetingId);
         formData.append("timestamp", Date.now().toString());
         formData.append("chunk", event.data);
+        console.log(event.data);
 
         const result = await uploadRecording(formData, getToken());
         console.log(result);
       };
 
       recorder.onstart = () => console.log("Recording started");
-      recorder.onstop = () => console.log("Recording stopped");
+      recorder.onstop = async () => {
+        console.log("Recording stopped");
+        const result = await saveRecording(meetingId, getToken());
+        console.log(result);
+      };
 
       recorder.start(1000);
       recorderRef.current = recorder;
