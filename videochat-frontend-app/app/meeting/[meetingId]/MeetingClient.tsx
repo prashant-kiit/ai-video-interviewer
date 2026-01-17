@@ -19,7 +19,7 @@ export default function MeetingClient({ meetingId }: { meetingId: string }) {
     (() => {
       startLiveStream();
     })();
-  });
+  }, [startLiveStream]);
 
   return (
     <div>

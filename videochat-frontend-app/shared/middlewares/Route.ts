@@ -64,6 +64,14 @@ export const Routes: TRoute[] = [
     headerSize: 2,
     isProtected: true,
   },
+  {
+    route: "/joinmeeting",
+    routeRegex: /^\/joinmeeting$/,
+    name: "JoinMeeting",
+    subHeader: "Join Meeting",
+    headerSize: 2,
+    isProtected: true,  
+  },
 ];
 
 export const NotFoundRoute: TRoute = {
