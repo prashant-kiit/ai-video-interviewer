@@ -17,27 +17,6 @@ type RootHandler struct {
 	meetings controller.MeetingController
 }
 
-func NewRootHandler() *RootHandler {
-	redisClient := infra.NewRedisClient()
-	userService := service.UserService{
-		Redis: redisClient,
-	}
-	meetingService := service.MeetingService{
-		Redis: redisClient,
-	}
-
-	return &RootHandler{
-		root:   controller.RootController{},
-		health: controller.HealthController{},
-		users: controller.UserController{
-			UserService: userService,
-		},
-		meetings: controller.MeetingController{
-			MeetingService: meetingService,
-		},
-	}
-}
-
 func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.Method == http.MethodGet && r.URL.Path == "/":
@@ -64,7 +43,31 @@ func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/recordingsave/"):
 		shared.AuthMiddleware(http.HandlerFunc(h.meetings.SaveMeetingRecords)).ServeHTTP(w, r)
 
+	case r.Method == http.MethodPost && r.URL.Path == "/streamlive":
+		shared.AuthMiddleware(http.HandlerFunc(h.meetings.LiveStream)).ServeHTTP(w, r)
+
 	default:
 		http.NotFound(w, r)
+	}
+}
+
+func NewRootHandler() *RootHandler {
+	redisClient := infra.NewRedisClient()
+	userService := service.UserService{
+		Redis: redisClient,
+	}
+	meetingService := service.MeetingService{
+		Redis: redisClient,
+	}
+
+	return &RootHandler{
+		root:   controller.RootController{},
+		health: controller.HealthController{},
+		users: controller.UserController{
+			UserService: userService,
+		},
+		meetings: controller.MeetingController{
+			MeetingService: meetingService,
+		},
 	}
 }

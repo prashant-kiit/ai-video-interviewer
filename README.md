@@ -36,6 +36,7 @@ Todos:
 20. Validation with every reload
 21. ReactJS/NextJS Router Design: Routes, Authentication, Not Found Page, Error Page, Conditional Routing (Protected/Unprotected Routes)
 22. Add Backpressure queue for recording client
+23. View Recorded Video
 
 Go Package Management:
 What each command does

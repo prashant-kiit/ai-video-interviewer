@@ -3,12 +3,10 @@ package controller
 import (
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
@@ -94,12 +92,13 @@ func (c *MeetingController) UploadMeetingRecords(w http.ResponseWriter, r *http.
 
 	data, err := io.ReadAll(file)
 	if err != nil {
-		log.Fatal(err)
+		shared.SendError(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	filename := fmt.Sprintf("meetingrecording-%s-%s-current.webm", username, meetingId)
 
-	saveChunk(filename, data)
+	c.MeetingService.SaveChunk(filename, data, "recordings")
 
 	shared.SendJSON(w, http.StatusOK, "chunk uploaded", fmt.Sprintf("chunk uploaded, with filename %s", filename))
 }
@@ -136,22 +135,54 @@ func (c *MeetingController) SaveMeetingRecords(w http.ResponseWriter, r *http.Re
 	shared.SendJSON(w, http.StatusOK, "recording saved", fmt.Sprintf("recording saved, with filename %s", newfilename))
 }
 
-var mu sync.Mutex
+func (c *MeetingController) LiveStream(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 
-func saveChunk(filename string, data []byte) error {
-	mu.Lock()
-	defer mu.Unlock()
-
-	f, err := os.OpenFile(
-		filepath.Join("recordings", filename),
-		os.O_CREATE|os.O_WRONLY|os.O_APPEND,
-		0644,
-	)
-	if err != nil {
-		return err
+	if err := r.ParseMultipartForm(100 << 20); err != nil {
+		shared.SendError(w, "invalid multipart form", http.StatusBadRequest)
+		return
 	}
-	defer f.Close()
 
-	_, err = f.Write(data)
-	return err
+	username, ok := ctx.Value("username").(string)
+	if !ok {
+		shared.SendError(w, "username not found in context", http.StatusBadRequest)
+		return
+	}
+
+	meetingId := r.FormValue("meetingId")
+	if meetingId == "" {
+		shared.SendError(w, "meetingId missing", http.StatusBadRequest)
+		return
+	}
+
+	timestamp := r.FormValue("timestamp")
+	if timestamp == "" {
+		shared.SendError(w, "timestamp missing", http.StatusBadRequest)
+		return
+	}
+
+	file, _, err := r.FormFile("chunk")
+	if err != nil {
+		shared.SendError(w, "chunk missing", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		shared.SendError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = os.MkdirAll(fmt.Sprintf("livestreams_%s", meetingId), 0755)
+	if err != nil {
+		shared.SendError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	filename := fmt.Sprintf("livestream-%s-%s-%s.webm", username, meetingId, timestamp)
+
+	c.MeetingService.SaveChunk(filename, data, fmt.Sprintf("livestreams_%s", meetingId))
+
+	shared.SendJSON(w, http.StatusOK, "chunk uploaded", fmt.Sprintf("chunk uploaded, with filename %s", filename))
 }

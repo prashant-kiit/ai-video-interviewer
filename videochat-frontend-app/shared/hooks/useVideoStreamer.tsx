@@ -1,12 +1,18 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { uploadRecording, saveRecording } from "@/app/meeting/[meetingId]/meeting.handler";
+import {
+  uploadRecording,
+  saveRecording,
+} from "@/app/meeting/[meetingId]/meeting.handler";
 import { useToken } from "../store/token";
+import { streamLiveVideo } from "@/app/meeting/[meetingId]/stream.handler";
 
 function useVideoStreamer(meetingId: string) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
+  const liveStreamRef = useRef<MediaRecorder | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [recording, setRecording] = useState<MediaRecorder | null>(null);
+  const [liveStream, setLiveStream] = useState<MediaRecorder | null>(null);
   const [videoOn, setVideoOn] = useState(true);
   const [audioOn, setAudioOn] = useState(true);
   const { getToken } = useToken();
@@ -70,7 +76,7 @@ function useVideoStreamer(meetingId: string) {
       const recorder = new MediaRecorder(stream, {
         mimeType: "video/webm; codecs=vp8,opus",
       });
-      
+
       recorder.ondataavailable = async (event) => {
         if (event.data.size === 0) return;
 
@@ -101,6 +107,39 @@ function useVideoStreamer(meetingId: string) {
     }
   };
 
+  const startLiveStream = async () => {
+    try {
+      if (!stream || liveStream) return;
+
+      const liveStreamer = new MediaRecorder(stream, {
+        mimeType: "video/webm; codecs=vp8,opus",
+      });
+
+      liveStreamer.ondataavailable = async (event) => {
+        if (event.data.size === 0) return;
+
+        const formData = new FormData();
+        formData.append("meetingId", meetingId);
+        formData.append("timestamp", Date.now().toString());
+        formData.append("chunk", event.data);
+        console.log(event.data);
+
+        const result = await streamLiveVideo(formData, getToken());
+        console.log(result);
+      };
+
+      liveStreamer.onstart = () => console.log("Live stream started");
+      liveStreamer.onstop = async () => console.log("Live stream stopped");
+
+      liveStreamer.start(1000);
+      liveStreamRef.current = liveStreamer;
+      setLiveStream(liveStreamer);
+    } catch (error) {
+      console.error("Live stream error", error);
+      setLiveStream(null);
+    }
+  };
+
   return {
     videoRef,
     stream,
@@ -110,6 +149,7 @@ function useVideoStreamer(meetingId: string) {
     toggleVideo,
     toggleAudio,
     toggleRecording,
+    startLiveStream,
   };
 }
 

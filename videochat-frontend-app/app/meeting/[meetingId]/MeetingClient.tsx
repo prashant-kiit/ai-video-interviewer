@@ -3,17 +3,23 @@
 import Video from "../../../shared/components/Video";
 import ClientButton from "../../../shared/components/ClientButton";
 import useVideoStreamer from "../../../shared/hooks/useVideoStreamer";
+import { useEffect } from "react";
 
 export default function MeetingClient({ meetingId }: { meetingId: string }) {
   const {
-    recording,
     videoRef,
     toggleVideo,
     toggleAudio,
     videoOn,
     audioOn,
-    toggleRecording,
+    startLiveStream
   } = useVideoStreamer(meetingId);
+
+  useEffect(() => {
+    (() => {
+      startLiveStream();
+    })();
+  });
 
   return (
     <div>
@@ -29,10 +35,10 @@ export default function MeetingClient({ meetingId }: { meetingId: string }) {
           name={audioOn ? "Mute Mic" : "Unmute Mic"}
           handler={toggleAudio}
         />
-        <ClientButton
+        {/*<ClientButton
           name={recording ? "Stop Recording" : "Start Recording"}
           handler={toggleRecording}
-        />
+        />*/}
       </div>
       <div>
         <p>Meeting {meetingId}</p>

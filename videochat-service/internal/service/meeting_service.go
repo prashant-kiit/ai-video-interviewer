@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
@@ -101,4 +104,24 @@ func (s *MeetingService) GetOwnedMeetingsByUsername(username string, ctx context
 	}
 
 	return meetings, nil
+}
+
+var mu sync.Mutex
+
+func (s *MeetingService) SaveChunk(filename string, data []byte, folder string) error {
+	mu.Lock()
+	defer mu.Unlock()
+
+	f, err := os.OpenFile(
+		filepath.Join(folder, filename),
+		os.O_CREATE|os.O_WRONLY|os.O_APPEND,
+		0644,
+	)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = f.Write(data)
+	return err
 }
