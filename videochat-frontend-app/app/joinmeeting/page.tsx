@@ -24,7 +24,7 @@ export default function JoinMeetingPage() {
 
   return (
     <div>
-      {isLive ? (
+      {!isLive ? (
         <div>
           <Form
             action={onSubmit}

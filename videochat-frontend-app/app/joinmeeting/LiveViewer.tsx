@@ -25,7 +25,7 @@ export default function LiveViewer({ meetingId }: { meetingId: string }) {
         }
       });
 
-      ws = new WebSocket(`ws://localhost:8080/streamlive/${meetingId}`);
+      ws = new WebSocket(`ws://localhost:8080/downstreamlive/${meetingId}`);
       ws.binaryType = "arraybuffer";
 
       ws.onmessage = (event) => {

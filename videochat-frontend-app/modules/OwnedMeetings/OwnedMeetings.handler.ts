@@ -9,17 +9,19 @@ export type OwnedMeetingResponse = {
 };
 
 export async function getOwnedMeetings(
-  token: string
-): Promise<{ ok: true; meetings: OwnedMeetingResponse[] } | { ok: false; error: string }> {
+  token: string,
+): Promise<
+  { ok: true; meetings: OwnedMeetingResponse[] } | { ok: false; error: string }
+> {
   try {
     const response = await request<OwnedMeetingResponse[]>({
       method: "GET",
       url: "/ownedmeetings",
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-    
+
     console.log("Meetings retrieved successfully", response);
 
     return { ok: true, meetings: response.data };

@@ -43,7 +43,7 @@ func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/recordingsave/"):
 		shared.AuthMiddleware(http.HandlerFunc(h.meetings.SaveMeetingRecords)).ServeHTTP(w, r)
 
-	case r.Method == http.MethodPost && r.URL.Path == "/streamlive":
+	case r.Method == http.MethodPost && r.URL.Path == "/upstreamlive":
 		shared.AuthMiddleware(http.HandlerFunc(h.meetings.LiveStream)).ServeHTTP(w, r)
 
 	default:

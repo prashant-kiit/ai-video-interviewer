@@ -5,7 +5,7 @@ export async function streamLiveVideo(formData: FormData, token: string) {
   try {
     const response = await request<string>({
       method: "POST",
-      url: "/streamlive",
+      url: "/upstreamlive",
       data: formData,
       headers: {
         Authorization: `Bearer ${token}`,
