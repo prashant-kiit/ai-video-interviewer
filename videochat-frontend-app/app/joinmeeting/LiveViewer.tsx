@@ -52,7 +52,7 @@ export default function LiveViewer({ meetingId }: { meetingId: string }) {
         mediaSource.endOfStream();
       }
     };
-  }, [meetingId]);
+  }, [meetingId, getToken]);
 
   return <video ref={videoRef} controls autoPlay />;
 }
