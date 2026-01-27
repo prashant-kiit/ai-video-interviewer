@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/model"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/service"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/shared"
@@ -16,6 +17,7 @@ import (
 
 type MeetingController struct {
 	MeetingService service.MeetingService
+	WebSocket      websocket.Upgrader
 }
 
 func (c *MeetingController) Create(w http.ResponseWriter, r *http.Request) {
@@ -155,12 +157,6 @@ func (c *MeetingController) LiveStream(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	timestamp := r.FormValue("timestamp")
-	if timestamp == "" {
-		shared.SendError(w, "timestamp missing", http.StatusBadRequest)
-		return
-	}
-
 	file, _, err := r.FormFile("chunk")
 	if err != nil {
 		shared.SendError(w, "chunk missing", http.StatusBadRequest)
@@ -173,16 +169,47 @@ func (c *MeetingController) LiveStream(w http.ResponseWriter, r *http.Request) {
 		shared.SendError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	
+	channel := fmt.Sprintf("livestream:%s:%s", meetingId, username)
 
-	err = os.MkdirAll(fmt.Sprintf("livestreams_%s", meetingId), 0755)
-	if err != nil {
-		shared.SendError(w, err.Error(), http.StatusBadRequest)
+	c.MeetingService.PublishChunk(w, ctx, channel, data)
+
+	shared.SendJSON(w, http.StatusOK, "chunk uploaded", fmt.Sprintf("chunk published, with channel %s", channel))
+}
+
+func (c *MeetingController) DownstreamLive(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("DownstreamLive")
+	meetingId := strings.TrimPrefix(r.URL.Path, "/downstreamlive/")
+	if meetingId == "" {
+		http.Error(w, "meetingId missing", http.StatusBadRequest)
 		return
 	}
 
-	filename := fmt.Sprintf("livestream-%s-%s-%s.webm", username, meetingId, timestamp)
+	conn, err := c.WebSocket.Upgrade(w, r, nil)
+	if err != nil {
+		return
+	}
+	defer conn.Close()
 
-	c.MeetingService.SaveChunk(filename, data, fmt.Sprintf("livestreams_%s", meetingId))
+	ctx := r.Context()
+	
+	username, ok := ctx.Value("username").(string)
+	if !ok {
+		shared.SendError(w, "username not found in context", http.StatusBadRequest)
+		return
+	}
+	
+	channel := fmt.Sprintf("livestream:%s:%s", meetingId, username)
 
-	shared.SendJSON(w, http.StatusOK, "chunk uploaded", fmt.Sprintf("chunk uploaded, with filename %s", filename))
+	sub := c.MeetingService.Redis.Subscribe(ctx, channel)
+	defer sub.Close()
+
+	ch := sub.Channel()
+
+	for msg := range ch {
+		err := conn.WriteMessage(websocket.BinaryMessage, []byte(msg.Payload))
+		if err != nil {
+			return
+		}
+	}
 }

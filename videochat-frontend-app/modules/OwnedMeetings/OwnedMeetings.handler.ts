@@ -24,7 +24,7 @@ export async function getOwnedMeetings(
 
     console.log("Meetings retrieved successfully", response);
 
-    return { ok: true, meetings: response.data };
+    return { ok: true, meetings: response.data || [] };
   } catch (error) {
     const err = error as ApiError;
 

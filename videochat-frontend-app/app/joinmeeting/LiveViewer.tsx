@@ -1,8 +1,10 @@
+import { useToken } from "@/shared/store/token";
 import { useEffect, useRef } from "react";
 
 export default function LiveViewer({ meetingId }: { meetingId: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-
+  const { getToken } = useToken();
+  
   useEffect(() => {
     if (!videoRef.current) return;
 
@@ -24,8 +26,10 @@ export default function LiveViewer({ meetingId }: { meetingId: string }) {
           sourceBuffer!.appendBuffer(queue.shift()!);
         }
       });
+      
+      const token = getToken();
 
-      ws = new WebSocket(`ws://localhost:8080/downstreamlive/${meetingId}`);
+      ws = new WebSocket(`ws://localhost:8080/downstreamlive/${meetingId}?token=${token}`);
       ws.binaryType = "arraybuffer";
 
       ws.onmessage = (event) => {

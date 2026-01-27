@@ -17,7 +17,7 @@ import (
 )
 
 type MeetingService struct {
-	Redis *redis.Client
+	Redis     *redis.Client
 }
 
 func (s *MeetingService) IsMeetingDateTimeValid(w http.ResponseWriter, meetingDate string, meetingTime string) error {
@@ -124,4 +124,14 @@ func (s *MeetingService) SaveChunk(filename string, data []byte, folder string) 
 
 	_, err = f.Write(data)
 	return err
+}
+
+func (s *MeetingService) PublishChunk(w http.ResponseWriter, ctx context.Context, channel string, data []byte) error {
+	err := s.Redis.Publish(ctx, channel, data).Err()
+	if err != nil {
+		shared.SendError(w, "redis publish failed", http.StatusInternalServerError)
+		return nil
+	}
+
+	return nil
 }

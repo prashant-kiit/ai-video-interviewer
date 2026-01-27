@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gorilla/websocket"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/controller"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/infra"
 	"github.com/prashant-kiit/ai-video-interviewer/videochat-service/internal/service"
@@ -45,6 +46,9 @@ func (h *RootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case r.Method == http.MethodPost && r.URL.Path == "/upstreamlive":
 		shared.AuthMiddleware(http.HandlerFunc(h.meetings.LiveStream)).ServeHTTP(w, r)
+		
+	case r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/downstreamlive/"):
+		shared.AuthMiddleware(http.HandlerFunc(h.meetings.DownstreamLive)).ServeHTTP(w, r)
 
 	default:
 		http.NotFound(w, r)
@@ -68,6 +72,11 @@ func NewRootHandler() *RootHandler {
 		},
 		meetings: controller.MeetingController{
 			MeetingService: meetingService,
+			WebSocket: websocket.Upgrader{
+				CheckOrigin: func(r *http.Request) bool {
+					return true
+				},
+			},
 		},
 	}
 }

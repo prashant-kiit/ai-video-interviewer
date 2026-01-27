@@ -49,23 +49,31 @@ func GenerateJWT(username string) (string, error) {
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("AuthMiddleware called")
+
+		var tokenStr string
+
+		// 1️⃣ Try Authorization header first
 		auth := r.Header.Get("Authorization")
-		if auth == "" {
-			SendError(w, "missing authorization header", http.StatusUnauthorized)
-			return
+		if auth != "" {
+			parts := strings.SplitN(auth, " ", 2)
+			if len(parts) != 2 || parts[0] != "Bearer" {
+				SendError(w, "invalid authorization header", http.StatusUnauthorized)
+				return
+			}
+			tokenStr = parts[1]
+		} else {
+			// 2️⃣ Fallback to query param (WebSocket support)
+			tokenStr = r.URL.Query().Get("token")
+			if tokenStr == "" {
+				SendError(w, "missing auth token", http.StatusUnauthorized)
+				return
+			}
 		}
 
-		parts := strings.SplitN(auth, " ", 2)
-		if len(parts) != 2 || parts[0] != "Bearer" {
-			SendError(w, "invalid authorization header", http.StatusUnauthorized)
-			return
-		}
-
-		tokenStr := parts[1]
-
+		// 3️⃣ Parse JWT
 		token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (any, error) {
-			jwtSecret := []byte(os.Getenv("JWT_SECRET"))
-			return jwtSecret, nil
+			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
 		if err != nil || !token.Valid {
@@ -85,8 +93,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
+		// 4️⃣ Attach user to context
 		ctx := context.WithValue(r.Context(), "username", username)
-		fmt.Println(r.URL.Path)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})

@@ -23,7 +23,7 @@ export default function MeetingTable() {
         const result = await getOwnedMeetings(token);
         console.log("Result", result);
         if (result.ok) {
-          console.log("Owned Meetings", result.meetings);
+          console.log("Owned Meetings", result.meetings );
           setOwnedMeetings(result.meetings);
         } else {
           console.error("Error in getting owned meeting", result.error);
