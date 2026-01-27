@@ -35,10 +35,6 @@ export default function MeetingClient({ meetingId }: { meetingId: string }) {
           name={audioOn ? "Mute Mic" : "Unmute Mic"}
           handler={toggleAudio}
         />
-        {/*<ClientButton
-          name={recording ? "Stop Recording" : "Start Recording"}
-          handler={toggleRecording}
-        />*/}
       </div>
       <div>
         <p>Meeting {meetingId}</p>

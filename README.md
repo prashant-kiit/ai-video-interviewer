@@ -38,6 +38,7 @@ Todos:
 22. Add Backpressure queue for recording client
 23. View Recorded Video
 24. Display Meeting Name in Owned Meetings Page
+25. Refactor Meeting Modules and Page in Next App
 
 Go Package Management:
 What each command does
